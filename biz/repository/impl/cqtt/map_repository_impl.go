@@ -1,6 +1,6 @@
 package cqtt
 
-import "pock_plugins/backend/model"
+import "plugin-sdk/biz/model"
 
 var MapRepositoryImpl4CQTTInstance = &mapRepositoryImpl4CQTT{}
 

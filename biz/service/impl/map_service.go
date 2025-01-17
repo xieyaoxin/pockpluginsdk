@@ -1,8 +1,8 @@
 package impl
 
 import (
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/repository"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/repository"
 )
 
 var MapServiceInstance = &mapService{}

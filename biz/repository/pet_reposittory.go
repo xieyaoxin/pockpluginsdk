@@ -1,6 +1,6 @@
 package repository
 
-import "pock_plugins/backend/model"
+import "plugin-sdk/biz/model"
 
 type PetRepository interface {
 	// GetCarriedPets 查询身上的宠物信息

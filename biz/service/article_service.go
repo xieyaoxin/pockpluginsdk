@@ -1,8 +1,8 @@
 package service
 
 import (
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/service/impl"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/service/impl"
 )
 
 func (app *App) GetArticleList(name string) string {

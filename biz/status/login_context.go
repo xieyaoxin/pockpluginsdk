@@ -1,6 +1,6 @@
 package status
 
-import "pock_plugins/backend/model"
+import "plugin-sdk/biz/model"
 
 // 登录态
 var currentLoginUser = &model.User{}

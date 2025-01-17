@@ -1,6 +1,6 @@
 package repository
 
-import "pock_plugins/backend/model"
+import "plugin-sdk/biz/model"
 
 type UserRepository interface {
 	Login(user model.User) (*model.User, error)

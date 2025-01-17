@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"pock_plugins/backend/repository/impl/cqtt"
-	"pock_plugins/backend/status"
+	"plugin-sdk/biz/repository/impl/cqtt"
+	"plugin-sdk/biz/status"
 )
 
 func GetUserRepository() UserRepository {

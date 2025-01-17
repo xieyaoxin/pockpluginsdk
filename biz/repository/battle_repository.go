@@ -1,6 +1,6 @@
 package repository
 
-import "pock_plugins/backend/model"
+import "plugin-sdk/biz/model"
 
 type BattleRepository interface {
 	// SelectAndEnterMap 进入地图 遭遇怪物

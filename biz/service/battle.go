@@ -2,10 +2,10 @@ package service
 
 import (
 	"encoding/json"
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/service/impl"
-	"pock_plugins/backend/status"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/service/impl"
+	"plugin-sdk/biz/status"
 	"time"
 )
 

@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	"pock_plugins/backend/service/impl"
+	"plugin-sdk/biz/service/impl"
 )
 
 func (app *App) GetUserInfo() string {

@@ -1,10 +1,10 @@
 package impl
 
 import (
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/repository"
-	"pock_plugins/backend/status"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/repository"
+	"plugin-sdk/biz/status"
 	"strings"
 	"time"
 )

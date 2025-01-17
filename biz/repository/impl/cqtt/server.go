@@ -8,10 +8,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/status"
-	util "pock_plugins/backend/utils"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/status"
+	util "plugin-sdk/biz/utils"
 	"strings"
 )
 

@@ -1,8 +1,8 @@
 package impl
 
 import (
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/repository"
+	"plugin-sdk/backend/model"
+	"plugin-sdk/backend/repository"
 )
 
 var UserServiceInstance = &userService{}

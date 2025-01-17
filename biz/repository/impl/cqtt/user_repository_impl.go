@@ -2,9 +2,9 @@ package cqtt
 
 import (
 	"errors"
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/model"
-	"pock_plugins/backend/status"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/status"
 )
 
 var UserRepositoryImpl4CQTTInstance = &userRepositoryImpl4CQTT{}

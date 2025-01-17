@@ -1,7 +1,7 @@
 package service
 
 import (
-	"pock_plugins/backend/log"
+	"plugin-sdk/biz/log"
 )
 
 func (app *App) GetLog() string {

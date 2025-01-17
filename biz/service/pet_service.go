@@ -1,7 +1,7 @@
 package service
 
 import (
-	"pock_plugins/backend/service/impl"
+	"plugin-sdk/biz/service/impl"
 )
 
 // GetCarriedPets 查询身上的宠物信息

@@ -2,9 +2,9 @@ package cqtt
 
 import (
 	"errors"
-	"pock_plugins/backend/log"
-	"pock_plugins/backend/model"
-	util "pock_plugins/backend/utils"
+	"plugin-sdk/biz/log"
+	"plugin-sdk/biz/model"
+	util "plugin-sdk/biz/utils"
 	"strconv"
 	"strings"
 )
