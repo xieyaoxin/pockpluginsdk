@@ -1,0 +1,15 @@
+package impl
+
+import (
+	"pock_plugins/backend/model"
+	"pock_plugins/backend/repository"
+)
+
+var MapServiceInstance = &mapService{}
+
+type mapService struct {
+}
+
+func (*mapService) GetBattleMapList() []*model.BattleMap {
+	return repository.GetMapRepository().GetMapList()
+}
