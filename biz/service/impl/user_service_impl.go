@@ -1,8 +1,8 @@
 package impl
 
 import (
-	"plugin-sdk/backend/model"
-	"plugin-sdk/backend/repository"
+	"plugin-sdk/biz/model"
+	"plugin-sdk/biz/repository"
 )
 
 var UserServiceInstance = &userService{}
