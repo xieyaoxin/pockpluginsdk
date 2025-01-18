@@ -1,4 +1,4 @@
-package callback
+package biz_callback
 
 type ReportCallback interface {
 	Callback(data interface{})

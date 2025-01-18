@@ -1,4 +1,4 @@
-package callback
+package biz_callback
 
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
