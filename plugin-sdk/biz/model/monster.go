@@ -16,6 +16,6 @@ func (monster *Monster) CalculateCurrentHpRate() {
 		monster.CurrentHpRate = 1
 		return
 	}
-	rate := monster.CurrentHpRate * 100 / monster.TotalHp
+	rate := monster.CurrentHp * 100 / monster.TotalHp
 	monster.CurrentHpRate = rate
 }

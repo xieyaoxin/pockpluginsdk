@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
@@ -40,8 +41,14 @@ func GetLoginUser() model.User {
 	properties := strings.Split(string(data), "\n")
 	userInfo := properties[0]
 	userInfoArray := strings.Split(userInfo, ";")
-	return model.User{
+	User := model.User{
 		LoginName: userInfoArray[0],
 		Password:  userInfoArray[1],
 	}
+	login, err := plugin_sdk.UserServiceInstance.Login(User.LoginName, User.Password)
+	if err != nil {
+		return model.User{}
+	}
+	log.Info("登录成功 %v", login)
+	return User
 }

@@ -1,6 +1,7 @@
 package callback
 
 import (
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"sync"
 	"time"
 )
@@ -24,6 +25,8 @@ func (dr *DataReporter) Start(callback ReportCallback) {
 			// 模拟上报数据的操作，这里只是简单打印
 			if callback != nil {
 				callback.Callback(data)
+			} else {
+				log.Info("未配置战斗结束回调")
 			}
 			// 可以替换为实际的网络请求等上报操作
 			time.Sleep(1 * time.Second)

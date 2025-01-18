@@ -47,6 +47,7 @@ func (battleRepositoryImpl) FightOnce(SkillId string, monster *model.Monster) st
 	}
 	monster.CurrentHp = leftHp
 	monster.CalculateCurrentHpRate()
+	log.Info("当前怪物：%s. 剩余血量 %d, 百分比 %d %", monster.Name, monster.CurrentHp, monster.CurrentHpRate)
 	// 判断
 	if strings.Contains(resultArray[2], "受到了严重伤害，已经不能战斗") {
 		return "00"
