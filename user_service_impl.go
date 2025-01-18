@@ -1,4 +1,4 @@
-package impl
+package plugin_sdk
 
 import (
 	"plugin-sdk/biz/model"
