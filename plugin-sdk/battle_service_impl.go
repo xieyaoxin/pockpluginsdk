@@ -1,10 +1,10 @@
 package plugin_sdk
 
 import (
-	"github.com/xieyaoxin/plugin-sdk/biz/log"
-	"github.com/xieyaoxin/plugin-sdk/biz/model"
-	"github.com/xieyaoxin/plugin-sdk/biz/repository"
-	"github.com/xieyaoxin/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/log"
+	model2 "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/repository"
+	status2 "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/status"
 	"strings"
 	"time"
 )
@@ -15,16 +15,16 @@ var BattleServiceImpl = &battleService{}
 type battleService struct {
 }
 
-func (instance *battleService) Fight(BattleConfig model.BattleConfig) bool {
+func (instance *battleService) Fight(BattleConfig model2.BattleConfig) bool {
 	// 后续加锁
-	if status.GetConflictTask() {
+	if status2.GetConflictTask() {
 		return false
 	}
-	status.SetBattleStatus(status.Running)
+	status2.SetBattleStatus(status2.Running)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				status.SetBattleStatus(status.NotReady)
+				status2.SetBattleStatus(status2.NotReady)
 			}
 		}()
 		err := PetServiceInstance.SaveUnBattlePet()
@@ -40,7 +40,7 @@ func (instance *battleService) Fight(BattleConfig model.BattleConfig) bool {
 
 // FightOneTime 普通地图 根据配置捕捉或击杀 - 完成一次进入地图的战斗
 // 进入地图失败时 返回false
-func FightOneTime(BattleConfig model.BattleConfig) bool {
+func FightOneTime(BattleConfig model2.BattleConfig) bool {
 
 	monster, err := impl.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
 	if err != nil {
@@ -73,7 +73,7 @@ func FightOneTime(BattleConfig model.BattleConfig) bool {
 	}
 }
 
-func fight(BattleConfig model.BattleConfig, monster *model.Monster) {
+func fight(BattleConfig model2.BattleConfig, monster *model2.Monster) {
 	for {
 		result := impl.FightOnce(BattleConfig.SkillId, monster)
 		if result != "10" {
@@ -84,7 +84,7 @@ func fight(BattleConfig model.BattleConfig, monster *model.Monster) {
 }
 
 // catchPet: 00: 不在捕捉范围内  01: 捕捉失败 11: 捕捉成功; 10: 战斗失败 / 战斗成功
-func catchPet(BattleConfig model.BattleConfig, monster *model.Monster) string {
+func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string {
 	NeedCatch := false
 	for _, CatchMonsterName := range BattleConfig.CatchPets {
 		if strings.Contains(monster.Name, CatchMonsterName) {
@@ -125,7 +125,7 @@ func catchPet(BattleConfig model.BattleConfig, monster *model.Monster) string {
 	}
 }
 
-func getBallNameListByMonsterName(monsterName string) []*model.Article {
+func getBallNameListByMonsterName(monsterName string) []*model2.Article {
 	ballName := monsterName + "·精灵球"
 	ballList, _ := ArticleServiceInstance.QueryArticleList(ballName)
 	return ballList

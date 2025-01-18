@@ -1,6 +1,8 @@
 package status
 
-import "github.com/xieyaoxin/plugin-sdk/biz/model"
+import (
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+)
 
 // 登录态
 var currentLoginUser = &model.User{}

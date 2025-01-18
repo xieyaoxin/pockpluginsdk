@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/xieyaoxin/plugin-sdk/biz/model"
+import (
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+)
 
 type UserRepository interface {
 	Login(user model.User) (*model.User, error)

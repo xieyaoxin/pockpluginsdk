@@ -1,6 +1,8 @@
 package repository
 
-import "github.com/xieyaoxin/plugin-sdk/biz/model"
+import (
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+)
 
 type BattleRepository interface {
 	// SelectAndEnterMap 进入地图 遭遇怪物

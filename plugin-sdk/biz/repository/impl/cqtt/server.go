@@ -5,10 +5,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"github.com/xieyaoxin/plugin-sdk/biz/log"
-	"github.com/xieyaoxin/plugin-sdk/biz/model"
-	"github.com/xieyaoxin/plugin-sdk/biz/status"
-	util "github.com/xieyaoxin/plugin-sdk/biz/utils"
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+	status2 "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/status"
+	util "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/utils"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -24,7 +24,7 @@ func InitParam() map[string]string {
 }
 
 func callServerFormInterface(interfaceName string, params map[string]string) string {
-	if status.IsBattleParsing() {
+	if status2.IsBattleParsing() {
 		panic("正在停止战斗任务")
 	}
 	payload := url.Values{}
@@ -44,7 +44,7 @@ func callServerFormInterface(interfaceName string, params map[string]string) str
 	req.Header.Add("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
 	req.Header.Add("X-Prototype-Version", "1.5.0")
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
-	req.Header.Add("Cookie", "PHPSESSID="+status.GetLoginToken())
+	req.Header.Add("Cookie", "PHPSESSID="+status2.GetLoginToken())
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		// retry
@@ -58,7 +58,7 @@ func callServerFormInterface(interfaceName string, params map[string]string) str
 
 // 调用口袋接口,
 func CallServerGetInterface(interfaceName string, param map[string]string) string {
-	if status.IsBattleParsing() {
+	if status2.IsBattleParsing() {
 		panic("正在停止战斗任务")
 	}
 	// 设置统一延时 300ms
@@ -81,7 +81,7 @@ func CallServerGetInterface(interfaceName string, param map[string]string) strin
 	req.Header.Add("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
 	req.Header.Add("X-Prototype-Version", "1.5.0")
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
-	req.Header.Add("Cookie", "PHPSESSID="+status.GetLoginToken())
+	req.Header.Add("Cookie", "PHPSESSID="+status2.GetLoginToken())
 	if err != nil {
 		log.Info("构造请求失败, err:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
@@ -104,7 +104,7 @@ func CallServerGetInterface(interfaceName string, param map[string]string) strin
 
 	if strings.Contains(result, "登录") && interfaceName != "/passport/login.php" {
 		log.Info("重新登录： uri: %s param: %s, 原因 %s", interfaceName, util.MapToJsonString(param), result)
-		Login(*status.GetLoginUser(), 0)
+		Login(*status2.GetLoginUser(), 0)
 		return CallServerGetInterface(interfaceName, param)
 	}
 
