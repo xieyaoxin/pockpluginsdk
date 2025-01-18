@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 )
 
 type PetRepository interface {

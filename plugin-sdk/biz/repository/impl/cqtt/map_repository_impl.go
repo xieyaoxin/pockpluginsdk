@@ -1,7 +1,7 @@
 package cqtt
 
 import (
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 )
 
 var MapRepositoryImpl4CQTTInstance = &mapRepositoryImpl4CQTT{}

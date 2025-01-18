@@ -1,10 +1,10 @@
 package plugin_sdk
 
 import (
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/log"
-	model2 "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/repository"
-	status2 "github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	model2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"strings"
 	"time"
 )

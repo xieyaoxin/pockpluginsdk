@@ -2,9 +2,9 @@ package cqtt
 
 import (
 	"errors"
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/log"
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/model"
-	"github.com/xieyaoxin/plugin-sdk/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 )
 
 var UserRepositoryImpl4CQTTInstance = &userRepositoryImpl4CQTT{}

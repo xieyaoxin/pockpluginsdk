@@ -1,4 +1,4 @@
-module github.com/xieyaoxin/plugin-sdk
+module github.com/xieyaoxin/pockpluginsdk
 
 go 1.20
 
