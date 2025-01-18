@@ -5,6 +5,7 @@ import (
 	model2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"strings"
 	"time"
 )
@@ -15,12 +16,14 @@ var BattleServiceImpl = &battleService{}
 type battleService struct {
 }
 
-func (instance *battleService) Fight(BattleConfig model2.BattleConfig) bool {
+func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackInterface callback.BattleReportCallbackInterface) bool {
 	// 后续加锁
 	if status2.GetConflictTask() {
 		return false
 	}
 	status2.SetBattleStatus(status2.Running)
+	reporter := callback.NewDataReporter()
+	reporter.Start(callbackInterface)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -33,6 +36,7 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig) bool {
 		}
 		for {
 			FightOneTime(BattleConfig)
+			reporter.SendData("战斗结束")
 		}
 	}()
 	return true
