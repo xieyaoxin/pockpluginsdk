@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"plugin-sdk/biz/repository/impl/cqtt"
-	"plugin-sdk/biz/status"
+	"github.com/xieyaoxin/plugin-sdk/biz/repository/impl/cqtt"
+	"github.com/xieyaoxin/plugin-sdk/biz/status"
 )
 
 func GetUserRepository() UserRepository {

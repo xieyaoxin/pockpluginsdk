@@ -1,6 +1,6 @@
 package repository
 
-import "plugin-sdk/biz/model"
+import "github.com/xieyaoxin/plugin-sdk/biz/model"
 
 type ArticleRepository interface {
 	UseArticle(articleId string) error

@@ -1,6 +1,6 @@
 package cqtt
 
-import "plugin-sdk/biz/model"
+import "github.com/xieyaoxin/plugin-sdk/biz/model"
 
 var MapRepositoryImpl4CQTTInstance = &mapRepositoryImpl4CQTT{}
 

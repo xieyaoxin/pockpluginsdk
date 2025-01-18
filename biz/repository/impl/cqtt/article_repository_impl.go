@@ -1,8 +1,8 @@
 package cqtt
 
 import (
-	"plugin-sdk/biz/model"
-	util "plugin-sdk/biz/utils"
+	"github.com/xieyaoxin/plugin-sdk/biz/model"
+	util "github.com/xieyaoxin/plugin-sdk/biz/utils"
 	"strconv"
 	"strings"
 )

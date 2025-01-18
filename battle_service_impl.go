@@ -1,10 +1,10 @@
 package plugin_sdk
 
 import (
-	"plugin-sdk/biz/log"
-	"plugin-sdk/biz/model"
-	"plugin-sdk/biz/repository"
-	"plugin-sdk/biz/status"
+	"github.com/xieyaoxin/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/plugin-sdk/biz/repository"
+	"github.com/xieyaoxin/plugin-sdk/biz/status"
 	"strings"
 	"time"
 )

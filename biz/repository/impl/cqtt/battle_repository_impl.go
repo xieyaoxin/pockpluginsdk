@@ -2,9 +2,9 @@ package cqtt
 
 import (
 	"errors"
-	"plugin-sdk/biz/log"
-	"plugin-sdk/biz/model"
-	util "plugin-sdk/biz/utils"
+	"github.com/xieyaoxin/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/plugin-sdk/biz/model"
+	util "github.com/xieyaoxin/plugin-sdk/biz/utils"
 	"strconv"
 	"strings"
 	"time"

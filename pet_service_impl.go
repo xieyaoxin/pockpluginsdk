@@ -1,8 +1,8 @@
 package plugin_sdk
 
 import (
-	"plugin-sdk/biz/model"
-	"plugin-sdk/biz/repository"
+	"github.com/xieyaoxin/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/plugin-sdk/biz/repository"
 )
 
 var PetServiceInstance = &petService{}
