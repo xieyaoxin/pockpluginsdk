@@ -28,6 +28,10 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 		defer func() {
 			if err := recover(); err != nil {
 				status2.SetBattleStatus(status2.NotReady)
+				time.Sleep(time.Second)
+				reporter.SendData("挂机结束中")
+				reporter.Stop()
+				reporter.SendData("挂机已结束")
 			}
 		}()
 		err := PetServiceInstance.SaveUnBattlePet()
