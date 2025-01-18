@@ -15,11 +15,7 @@ type (
 )
 
 func (*userRepositoryImpl4KDHS) Login(user model.User) (*model.User, error) {
-	TempToken := MD5(user.LoginName + generateRandomSeed())
-	user.TempToken = TempToken
-	status.SetLoginUser(user)
 	token := Login(user, 0)
-
 	if token == "" {
 		log.Error("登录失败")
 		return nil, errors.New("登录失败")

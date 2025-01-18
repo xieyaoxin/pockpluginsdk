@@ -1,7 +1,12 @@
 package utils
 
 import (
+	"crypto/md5"
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"log"
 )
 
@@ -72,4 +77,24 @@ func GbkToUtf8(s []byte) ([]byte, error) {
 	//	return nil, e
 	//}
 	return s, nil
+}
+
+func MD5(str string) string {
+	data := []byte(str) //切片
+	has := md5.Sum(data)
+	md5str := fmt.Sprintf("%x", has) //将[]byte转成16进制
+	return md5str
+}
+
+func GenerateRandomSeed() string {
+	if status2.SESSION_ID_KEEP_TYPE {
+		return ""
+	}
+	length := 10
+	b := make([]byte, length)
+	_, err := rand.Read(b)
+	if err != nil {
+		panic(err)
+	}
+	return base64.StdEncoding.EncodeToString(b)
 }

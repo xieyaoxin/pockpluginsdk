@@ -1,14 +1,14 @@
 package test
 
 import (
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"testing"
 )
 
 func TestLogin(t *testing.T) {
 	User := GetLoginUser()
-	login, err := repository.GetUserRepository().Login(User)
+	login, err := plugin_sdk.UserServiceInstance.Login(User.LoginName, User.Password)
 	if err != nil {
 		return
 	}

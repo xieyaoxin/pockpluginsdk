@@ -1,11 +1,7 @@
 package KDHS
 
 import (
-	"crypto/md5"
-	"crypto/rand"
-	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
@@ -161,22 +157,5 @@ func callLogin() string {
 }
 
 func GetSessionId(userName string) string {
-	return MD5(userName)
-}
-
-func MD5(str string) string {
-	data := []byte(str) //切片
-	has := md5.Sum(data)
-	md5str := fmt.Sprintf("%x", has) //将[]byte转成16进制
-	return md5str
-}
-
-func generateRandomSeed() string {
-	length := 10
-	b := make([]byte, length)
-	_, err := rand.Read(b)
-	if err != nil {
-		panic(err)
-	}
-	return base64.StdEncoding.EncodeToString(b)
+	return util.MD5(userName)
 }
