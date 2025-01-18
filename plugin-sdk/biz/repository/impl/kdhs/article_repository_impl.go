@@ -1,4 +1,4 @@
-package KDHS
+package kdhs
 
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"

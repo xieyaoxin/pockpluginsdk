@@ -1,4 +1,4 @@
-package KDHS
+package kdhs
 
 import (
 	"errors"
