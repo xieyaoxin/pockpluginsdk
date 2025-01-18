@@ -34,8 +34,13 @@ func (dr *DataReporter) Start(callback ReportCallback) {
 	}()
 }
 
-func (dr *DataReporter) Stop() {
+func (dr *DataReporter) Stop(callback ReportCallback) {
 	close(dr.DataChannel)
+	if callback != nil {
+		callback.StopCallback()
+	} else {
+		log.Info("未配置挂机结束回调")
+	}
 	dr.wg.Wait()
 }
 

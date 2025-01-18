@@ -16,22 +16,20 @@ var BattleServiceImpl = &battleService{}
 type battleService struct {
 }
 
-func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackInterface callback.BattleReportCallbackInterface) bool {
+func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackInterface biz_callback.BattleReportCallbackInterface) bool {
 	// 后续加锁
 	if status2.GetConflictTask() {
 		return false
 	}
 	status2.SetBattleStatus(status2.Running)
-	reporter := callback.NewDataReporter()
+	reporter := biz_callback.NewDataReporter()
 	reporter.Start(callbackInterface)
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
 				status2.SetBattleStatus(status2.NotReady)
 				time.Sleep(time.Second)
-				reporter.SendData("挂机结束中")
-				reporter.Stop()
-				reporter.SendData("挂机已结束")
+				reporter.Stop(callbackInterface)
 			}
 		}()
 		err := PetServiceInstance.SaveUnBattlePet()
@@ -39,8 +37,8 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 			return
 		}
 		for {
-			FightOneTime(BattleConfig)
-			reporter.SendData("战斗结束")
+			result := FightOneTime(BattleConfig)
+			reporter.SendData(result)
 		}
 	}()
 	return true
@@ -48,34 +46,36 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 
 // FightOneTime 普通地图 根据配置捕捉或击杀 - 完成一次进入地图的战斗
 // 进入地图失败时 返回false
-func FightOneTime(BattleConfig model2.BattleConfig) bool {
+func FightOneTime(BattleConfig model2.BattleConfig) string {
 
 	monster, err := impl.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
 	if err != nil {
 		log.Error("进入地图失败")
-		return false
+		return "进入地图异常"
 	}
 	for {
+		// 00: 不在捕捉范围内  01: 捕捉失败 11: 捕捉成功; 10: 战斗失败 / 战斗成功
 		result := catchPet(BattleConfig, monster)
 		switch result {
 		case "11":
-			return true
+			return "捕捉成功"
 		case "10":
-			return true
+			return "战斗结束"
 		case "00":
 			if BattleConfig.RunWhenNotCatch {
 				log.Info("当前怪物不在捕捉列表中,跳过")
 			} else {
 				fight(BattleConfig, monster)
 			}
-			return true
+			return "不在捕捉范围内"
 		case "01":
 			if BattleConfig.RunWhenCatchFailed {
 				log.Info("捕捉失败,跳过本次战斗")
+				return "捕捉失败"
 			} else {
 				fight(BattleConfig, monster)
+				return "战斗结束"
 			}
-			return true
 		}
 
 	}
