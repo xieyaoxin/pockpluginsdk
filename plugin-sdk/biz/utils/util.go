@@ -1,11 +1,7 @@
 package utils
 
 import (
-	"bytes"
 	"encoding/json"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
-	"io/ioutil"
 	"log"
 )
 
@@ -70,10 +66,10 @@ func InitParam() map[string]string {
 
 // GBK 转 UTF-8
 func GbkToUtf8(s []byte) ([]byte, error) {
-	reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewDecoder())
-	d, e := ioutil.ReadAll(reader)
-	if e != nil {
-		return nil, e
-	}
-	return d, nil
+	//reader := transform.NewReader(bytes.NewReader(s), simplifiedchinese.GBK.NewDecoder())
+	//d, e := ioutil.ReadAll(reader)
+	//if e != nil {
+	//	return nil, e
+	//}
+	return s, nil
 }

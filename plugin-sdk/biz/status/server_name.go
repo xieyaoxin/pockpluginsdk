@@ -1,7 +1,8 @@
 package status
 
 const (
-	CQTT = 0 // 宠爱天堂
+	CQTT = iota // 宠爱天堂
+	KDHS        // 幻世
 )
 
-const SERVER_NAME = CQTT
+var SERVER_NAME = KDHS
