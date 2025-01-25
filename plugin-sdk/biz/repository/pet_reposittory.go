@@ -14,7 +14,7 @@ type PetRepository interface {
 	// GetFarmedPets 查询牧场中的宠物
 	GetFarmedPets() ([]*model.Pet, error)
 	// SetBattlePet 设置主站宠物
-	SetBattlePet(PetId string) error
+	SetBattlePet(PetId string) (bool, error)
 	// CarryPet 携带宠物到身上
 	CarryPet(PetId string) error
 	// SavePet 存储宠物到牧场

@@ -44,3 +44,12 @@ func GetBattleRepository() BattleRepository {
 	}
 	return nil
 }
+
+func GetFusionRepository() FusionRepository {
+	switch status.SERVER_NAME {
+	case status.KDHS:
+		return kdhs.FusionRepositorykdhsImplInstance
+	default:
+		return nil
+	}
+}

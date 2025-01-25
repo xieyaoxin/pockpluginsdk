@@ -8,6 +8,7 @@ import (
 	"fmt"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"log"
+	"time"
 )
 
 func InSlice(slice []*interface{}, target interface{}) bool {
@@ -97,4 +98,12 @@ func GenerateRandomSeed() string {
 		panic(err)
 	}
 	return base64.StdEncoding.EncodeToString(b)
+}
+
+func CalculateTime(startTime time.Time) (time.Duration, time.Duration) {
+	delta := time.Since(startTime)
+
+	minute := delta / time.Minute
+	sec := (delta - minute*time.Minute) / time.Second
+	return minute, sec
 }

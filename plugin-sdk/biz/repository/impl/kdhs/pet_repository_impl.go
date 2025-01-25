@@ -113,25 +113,51 @@ func (*petRepositoryImpl4KDHS) GetPetSkillList(PetId string) ([]*model.Skill, er
 }
 
 func (*petRepositoryImpl4KDHS) GetFarmedPets() ([]*model.Pet, error) {
-	//TODO implement me
-	panic("implement me")
+	params := util.InitParam()
+	result := CallServerGetInterface("function/Muchang_Mod.php", params)
+	lines := strings.Split(result, "\n")
+	petList := []*model.Pet{}
+	for _, line := range lines {
+		if strings.Contains(line, "mcbbshow(") {
+			petId := strings.Split(strings.Replace(line, ")", "(", -1), "(")[1]
+			pet, _ := PetRepositoryImpl4KDHS.GetPetDetail(petId)
+			petList = append(petList, pet)
+		}
+	}
+	log.Info("查询到牧场宠物: %s", util.ListToJson(petList))
+	return petList, nil
 }
 
-func (*petRepositoryImpl4KDHS) SetBattlePet(PetId string) error {
+func (*petRepositoryImpl4KDHS) SetBattlePet(PetId string) (bool, error) {
 	params := util.InitParam()
 	params["id"] = PetId
 	params["op"] = "z"
 	result := CallServerGetInterface("function/mcGate.php", params)
 	log.Info("设置主站宠物 %s %s", PetId, result)
-	if result != "更改主战宝宝成功!" && result != "已经是主战！" {
-		return errors.New(result)
+	if result == "在牧场的宝宝不能设为主战哦！" {
+		return false, nil
 	}
-	return nil
+	if result != "更改主战宝宝成功!" && result != "已经是主战！" {
+		return false, errors.New(result)
+	}
+
+	return true, nil
 }
 
 func (instance *petRepositoryImpl4KDHS) CarryPet(PetId string) error {
-	//TODO implement me
-	panic("implement me")
+	params := util.InitParam()
+	params["id"] = PetId
+	params["op"] = "g"
+	result := CallServerGetInterface("function/mcGate.php", params)
+	log.Info("携带宠物 %s 操作结果 %s", PetId, result)
+	if result == "数据错误3！" {
+		log.Error("携带宠物  %s 失败", PetId)
+	}
+	if result != "操作成功!" && result != "此宠物已经携带！" {
+		log.Error("携带宠物  %s 失败", PetId)
+		return errors.New(result)
+	}
+	return nil
 }
 
 func (instance *petRepositoryImpl4KDHS) SavePet(PetId string) error {

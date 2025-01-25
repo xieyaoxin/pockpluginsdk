@@ -1,6 +1,7 @@
 package kdhs
 
 import (
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strconv"
@@ -15,7 +16,10 @@ type (
 )
 
 func (*articleRepositoryImpl4KDHS) UseArticle(articleId string) error {
-
+	params := util.InitParam()
+	params["id"] = articleId
+	result := CallServerGetInterface("function/usedProps.php", params)
+	log.Info("使用物品 id : %s 操作结果: %s", articleId, result)
 	return nil
 }
 func (rep *articleRepositoryImpl4KDHS) GetArticles(name string) ([]*model.Article, error) {
@@ -29,7 +33,10 @@ func (rep *articleRepositoryImpl4KDHS) GetArticles(name string) ([]*model.Articl
 		line := lines[lineNumber]
 		if strings.Contains(line, name) && strings.Contains(line, "bid") {
 			id := strings.Replace(strings.Split(strings.Split(line, "bid")[1], ";")[0], "=", "", 1)
-			article := rep.GetArticleDetail(id)
+			//article := rep.GetArticleDetail(id)
+			article := model.Article{
+				ID: id,
+			}
 			articleName := strings.Split(strings.Replace(line, "<", ">", -1), ">")[2]
 			article.Name = articleName
 

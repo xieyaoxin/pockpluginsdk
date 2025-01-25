@@ -119,10 +119,10 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 		BallId := BallList[0].ID
 		result := impl.CatchPet(monster, BallId)
 		if result {
-			err := PetServiceInstance.SaveUnBattlePet()
-			if err != nil {
-				return ""
-			}
+			//err := PetServiceInstance.SaveUnBattlePet()
+			//if err != nil {
+			//	return ""
+			//}
 			return "11"
 		} else {
 			return "01"
@@ -137,4 +137,22 @@ func getBallNameListByMonsterName(monsterName string) []*model2.Article {
 	ballName := monsterName + "·精灵球"
 	ballList, _ := ArticleServiceInstance.QueryArticleList(ballName)
 	return ballList
+}
+
+// InitCatchBmConfig 提供一个抓BM的配置
+func InitCatchBmConfig() *model2.BattleConfig {
+	Pet := PetServiceInstance.GetBattlePet()
+	return &model2.BattleConfig{
+		PetId:              Pet.Id,
+		SkillId:            "1",
+		MapId:              "1",
+		Difficulty:         "1",
+		SkipMonsters:       []string{},
+		CatchPets:          []string{"波姆"},
+		RunWhenCatchFailed: false,
+		RunWhenNotCatch:    false,
+		Balls:              []string{},
+		Rubbish:            []string{},
+		CatchHpThreshold:   100,
+	}
 }

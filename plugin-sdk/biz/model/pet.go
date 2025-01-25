@@ -15,3 +15,13 @@ type Skill struct {
 	SkillLevel string
 	SkillId    string
 }
+
+func PetSliceRemoveItem(List []*Pet, Item *Pet) []*Pet {
+	TempList := []*Pet{}
+	for _, Item1 := range List {
+		if Item != Item1 {
+			TempList = append(TempList, Item1)
+		}
+	}
+	return TempList
+}
