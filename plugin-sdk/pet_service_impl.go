@@ -3,6 +3,7 @@ package plugin_sdk
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	"strings"
 )
 
 var PetServiceInstance = &petService{}
@@ -23,7 +24,13 @@ func (*petService) GetBattlePet() *model.Pet {
 
 // GetCarriedPets 查询身上的宠物信息
 func (*petService) GetCarriedPetList() ([]*model.Pet, error) {
-	return repository.GetPetRepository().GetCarriedPets()
+	Pets, err := repository.GetPetRepository().GetCarriedPets()
+	if Pets != nil {
+		for _, Pet := range Pets {
+			Pet.Carried = true
+		}
+	}
+	return Pets, err
 }
 
 // GetPetDetail 获取宠物详情
@@ -34,11 +41,6 @@ func (*petService) GetPetDetail(PetId string) (*model.Pet, error) {
 // GetPetSkillList 获取宠物技能列表
 func (*petService) GetPetSkillList(PetId string) ([]*model.Skill, error) {
 	return repository.GetPetRepository().GetPetSkillList(PetId)
-}
-
-// GetFarmedPets 查询牧场中的宠物
-func (*petService) GetFarmedPets() ([]*model.Pet, error) {
-	return repository.GetPetRepository().GetFarmedPets()
 }
 
 // SetBattlePet 设置主站宠物
@@ -93,6 +95,23 @@ func (*petService) GetPetEvaluateArticle(Pet *model.Pet, Route string) *model.Ar
 
 	}
 
+}
+
+func (inst *petService) GetAllPets() []*model.Pet {
+	Farm, _ := inst.GetFarmPets()
+	Body, _ := inst.GetCarriedPetList()
+
+	return append(Body, Farm...)
+}
+
+func (inst *petService) GetPet(PetName string) *model.Pet {
+	Pets := inst.GetAllPets()
+	for _, Pet := range Pets {
+		if strings.Contains(Pet.Name, PetName) {
+			return Pet
+		}
+	}
+	return nil
 }
 
 //func (*petService) GetFarmPetByPetList(PetNameList []string) []*model.Pet {

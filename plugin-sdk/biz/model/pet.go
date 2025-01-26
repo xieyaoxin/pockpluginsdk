@@ -7,6 +7,7 @@ type Pet struct {
 	Cc       float64
 	Level    int64
 	IsBattle bool
+	Carried  bool
 }
 
 type Skill struct {

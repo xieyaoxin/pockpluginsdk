@@ -34,8 +34,9 @@ type EvaluateConfig struct {
 
 type NirvanaPetConfig struct {
 	MergePetConfig
-	PetName string
-	UseEgg  bool
+	PetName   string
+	UseEgg    bool
+	IsNirvana bool
 }
 type NirvanaConfig struct {
 	MainPet      NirvanaPetConfig
@@ -91,7 +92,7 @@ const (
 	EXPERIENCE_15E   = "15E"   // 15E
 	EXPERIENCE_20E   = "20E"   // 20E
 	EXPERIENCE_200E  = "200E"  // 20E
-	EXPERIENCE_800E  = "20E"   // 10E
+	EXPERIENCE_800E  = "800E"  // 10E
 )
 
 // 保护石头1
@@ -102,4 +103,19 @@ const (
 	PROTECT_ZZ   = "至尊"   // 天神
 	PROTECT_3XCC = "3XCC" // 3*
 	PROTECT_3X   = "3X"   // 3*
+
+	PROTECT_NIRVANA_SD  = "神丹" // 神丹
+	PROTECT_NIRVANA_NPD = "涅丹" // 神丹
+	PROTECT_NIRVANA_SSD = "圣丹" // 神丹
+
+	PROTECT_NIRVANA_YPNC = "一品捏成" // 神丹
+	PROTECT_NIRVANA_SPNC = "上品捏成" // 神丹
+	PROTECT_NIRVANA_JPNC = "极品捏成" // 神丹
+	PROTECT_NIRVANA_SPMZ = "上品命中" // 神丹
+	PROTECT_NIRVANA_JPMZ = "极品命中" // 神丹
+	PROTECT_NIRVANA_JPNG = "极品涅攻" // 神丹
 )
+
+var NirvanaEggList = []string{
+	"涅槃兽之卵(限时 )", "涅槃兽之卵(绑定)", "涅盘兽之卵",
+}

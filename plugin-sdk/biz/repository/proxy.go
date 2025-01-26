@@ -53,3 +53,12 @@ func GetFusionRepository() FusionRepository {
 		return nil
 	}
 }
+
+func GetEquipRepository() EquipRepository {
+	switch status.SERVER_NAME {
+	case status.KDHS:
+		return kdhs.EquipRepositoryImplKDHSInstance
+	default:
+		return nil
+	}
+}

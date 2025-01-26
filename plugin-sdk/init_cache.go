@@ -17,6 +17,7 @@ var WXL_NAMES = []string{"青龙琅琅", "小青龙琅琅", "金龙霸王", "冰
 var DRAGON_EGG_NAME = []string{"青龙琅琅之卵", "小青龙琅琅", "金龙霸王之卵", "冰龙苍海之卵", "艾薇儿之卵", "三尾忍忍", "仙狐六尾", "天狐莫姬之卵", "炎龙血焰之卵", "黄龙莫虚之卵"}
 var PetEvaluateRouteArticleMap = make(map[string]map[string]*model.Article)
 var FusionSpecialEvaluatePetNames = []string{"三尾忍忍", "狐仙六尾", "小青龙琅琅"}
+var NIRVANA_EGG_LIST = []*model.Article{}
 
 func init() {
 	//InitMergeArticleCache()
@@ -38,7 +39,24 @@ func InitMergeArticleCache() {
 		PROTECT_ARTICEL_MAP[ProtectArticleType] = ArticleList
 	}
 	// 缓存宠物信息
-	FARM_PETS, _ = PetServiceInstance.GetFarmPets()
+
+}
+
+func InitNirvanaCache() {
+	for _, ExperienceType := range repository.GetFusionRepository().GetExperienceTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetExperienceList(ExperienceType)
+		ArticleList, _ := ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType] = ArticleList
+	}
+
+	for _, ProtectArticleType := range repository.GetFusionRepository().GetNirvanaArticleTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetNirvanaArticleList(ProtectArticleType)
+		ArticleList, _ := ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		PROTECT_ARTICEL_MAP[ProtectArticleType] = ArticleList
+	}
+
+	NIRVANA_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
+
 }
 
 // GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
@@ -67,7 +85,6 @@ func GetBMFromCache() *model.Pet {
 	}
 	return nil
 }
-
 func GetProtectArticleByType(ProtectType string) (*model.Article, error) {
 	if ProtectArticleList, exists := PROTECT_ARTICEL_MAP[ProtectType]; exists {
 		TempProtectArticle := make([]*model.Article, len(ProtectArticleList))
@@ -99,7 +116,6 @@ func GetPetFromCacheByPetName(PetNameList []string) *model.Pet {
 	FARM_PETS = model.PetSliceRemoveItem(FARM_PETS, tempPet)
 	return tempPet
 }
-
 func GetExperienceArticleByType(ExperienceType string) (*model.Article, error) {
 	if ExperienceTypeList, exists := EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType]; exists {
 		TempExperienceArticle := make([]*model.Article, len(ExperienceTypeList))
@@ -116,4 +132,18 @@ func GetExperienceArticleByType(ExperienceType string) (*model.Article, error) {
 	}
 	// todo 增加从背包获取物品
 	return nil, errors.New("找不到合宠物品: " + ExperienceType)
+}
+func GetNirvanaEggArticle() *model.Article {
+	TempNirvanaArticle := make([]*model.Article, len(NIRVANA_EGG_LIST))
+	copy(TempNirvanaArticle, NIRVANA_EGG_LIST)
+	for _, NirvanaArticle := range TempNirvanaArticle {
+		if NirvanaArticle.ArticleCount == 0 {
+			NIRVANA_EGG_LIST = model.ArticleSliceRemoveItem(NIRVANA_EGG_LIST, NirvanaArticle)
+			continue
+		} else {
+			NirvanaArticle.ArticleCount = NirvanaArticle.ArticleCount - 1
+			return NirvanaArticle
+		}
+	}
+	return nil
 }

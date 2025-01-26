@@ -16,4 +16,7 @@ type FusionRepository interface {
 	GetExperienceList(ExperienceType string) []string
 	GetProtectArticleTypeList() []string
 	GetProjectArticleList(ProtectArticleType string) []string
+
+	GetNirvanaArticleTypeList() []string
+	GetNirvanaArticleList(ProtectArticleType string) []string
 }
