@@ -44,7 +44,6 @@ func (instance *petRepositoryImpl4KDHS) GetCarriedPets() ([]*model.Pet, error) {
 				return nil, err
 			}
 			Pets = append(Pets, pet)
-			break
 		}
 	}
 	return Pets, nil

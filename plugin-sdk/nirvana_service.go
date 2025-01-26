@@ -6,6 +6,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
+	"strings"
 	"time"
 )
 
@@ -22,8 +23,11 @@ func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, erro
 		return false, err1
 	}
 	// 获取主宠
-	MainPet, _ := getNirvanaPet(Config.MainPet)
-	err := PetServiceInstance.SetBattlePet(MainPet.Id)
+	MainPet, err := getNirvanaPet(Config.MainPet)
+	if err != nil {
+		return false, err
+	}
+	err = PetServiceInstance.SetBattlePet(MainPet.Id)
 	if err != nil {
 		return false, err
 	}
@@ -35,9 +39,17 @@ func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, erro
 	// 脱装备
 	EquipServiceImplInstance.OffEquip(MainPet.Id)
 	// 获取副宠
-	AtePet, _ := getNirvanaPet(Config.AtePet)
+	AtePet, err1 := getNirvanaPet(Config.AtePet)
+	if err1 != nil {
+		log.Error("获取副宠失败")
+		return false, err1
+	}
 	// 获取捏
-	NirvanaPet, _ := getNirvanaPet(Config.NirvanaPet)
+	NirvanaPet, err2 := getNirvanaPet(Config.NirvanaPet)
+	if err2 != nil {
+		log.Error("获取捏失败")
+		return false, err1
+	}
 	once, err := nirvanaOnce(MainPet, AtePet, NirvanaPet, Config.ProtectType1, Config.ProtectType2)
 	if err != nil {
 		return false, err
@@ -62,6 +74,23 @@ func getNirvanaPet(config model.NirvanaPetConfig) (*model.Pet, error) {
 				if NirvanaEgg == nil {
 					return nil, errors.New("找不到涅蛋")
 				}
+				err := ArticleServiceInstance.UserArticle(NirvanaEgg)
+				if err != nil {
+					return nil, err
+				}
+				// 偶发获取捏失败
+				for Pet == nil {
+					Pets, _ := PetServiceInstance.GetCarriedPetList()
+					for _, CarriedPet := range Pets {
+						if !CarriedPet.IsBattle && strings.Contains(CarriedPet.Name, "兽") {
+							Pet = CarriedPet
+						}
+					}
+					if Pet == nil {
+						time.Sleep(100 * time.Millisecond)
+					}
+				}
+
 			} else {
 				ArticleList, err := ArticleServiceInstance.QueryArticleList(PetName)
 				if err != nil {
@@ -79,10 +108,12 @@ func getNirvanaPet(config model.NirvanaPetConfig) (*model.Pet, error) {
 				Pet = PetServiceInstance.GetPet(PetName)
 			}
 		} else {
-			return nil, errors.New("")
+			return nil, errors.New("未找到宠物")
 		}
 	}
-
+	if Pet == nil {
+		return nil, errors.New("未找到宠物")
+	}
 	// 进化
 	err := prepareNirvana(Pet, config)
 	if err != nil {
@@ -92,6 +123,8 @@ func getNirvanaPet(config model.NirvanaPetConfig) (*model.Pet, error) {
 }
 
 func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
+	TempPet, _ := PetServiceInstance.GetPetDetail(Pet.Id)
+	Pet.Level = TempPet.Level
 	// 升级
 	err := PetServiceInstance.SetBattlePet(Pet.Id)
 	if err != nil {

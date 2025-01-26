@@ -1,7 +1,9 @@
 package test
 
 import (
+	"encoding/json"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"testing"
 )
@@ -57,7 +59,7 @@ func TestNirvana(t *testing.T) {
 				ExperienceType: "20E",
 			},
 			PetName: "小神龙",
-			UseEgg:  false,
+			UseEgg:  true,
 		},
 		NirvanaPet: model.NirvanaPetConfig{
 			MergePetConfig: model.MergePetConfig{
@@ -65,12 +67,17 @@ func TestNirvana(t *testing.T) {
 				ExperienceType: "1E",
 			},
 			PetName:   "涅磐兽",
-			UseEgg:    false,
+			UseEgg:    true,
 			IsNirvana: true,
 		},
 		ProtectType1: "神丹",
 		ProtectType2: "上品捏成",
 	}
+	marshal, err2 := json.Marshal(Config)
+	if err2 != nil {
+		return
+	}
+	log.Info("涅槃配置为 %s", string(marshal))
 	plugin_sdk.InitNirvanaCache()
 	_, err := plugin_sdk.NirvanaServiceImplInstance.Nirvana(Config)
 	if err != nil {
