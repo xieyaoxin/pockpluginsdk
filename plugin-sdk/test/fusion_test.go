@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
@@ -64,7 +65,7 @@ func TestFusion(t *testing.T) {
 				MainPetConfig: model.MergePetConfig{
 					ExperienceType: "1E",
 					PetLevel:       60,
-					PetCc:          56,
+					PetCc:          50.5,
 					Evaluate: []*model.EvaluateConfig{
 						&model.EvaluateConfig{
 							EvaluateRoute: "1",
@@ -121,48 +122,54 @@ func TestFusion(t *testing.T) {
 			MainPetConfig: model.MergePetConfig{
 				ExperienceType: "1E",
 				PetLevel:       60,
-				Evaluate: []*model.EvaluateConfig{
-					&model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					}, &model.EvaluateConfig{
-						EvaluateRoute: "1",
-						ForceEvaluate: true,
-					},
-				},
 			},
 			AtePetConfig: model.MergePetConfig{
 				ExperienceType: "1E",
 				PetLevel:       60,
+				PetCc:          16.5,
+				Evaluate: []*model.EvaluateConfig{
+					&model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					}, &model.EvaluateConfig{
+						EvaluateRoute: "2",
+						ForceEvaluate: true,
+					},
+				},
 			},
 			ProtectType1: "至尊",
 			ProtectType2: "3XCC",
 		},
 	}
+	marshal, err := json.Marshal(MergeConfig)
+	if err != nil {
+		return
+	}
+	println(string(marshal))
 	god, err := plugin_sdk.MergeGod(MergeConfig)
 	if err != nil {
 		return

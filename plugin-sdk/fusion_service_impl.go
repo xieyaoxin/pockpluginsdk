@@ -15,21 +15,28 @@ type fusionServiceImpl struct {
 }
 
 // Fusion 合成一次
-func Fusion(mergeConfig model.SingleMergeConfig) (bool, error) {
+func Fusion(mergeConfig model.SingleMergeConfig, MainForceEvaluate bool, FusionAfterCcThreshold bool, AteForceEvaluate bool) (bool, error) {
 	Pet1, petError1 := getFusionPet(&mergeConfig.MainPetConfig)
 	if petError1 != nil {
 		return false, petError1
 	}
-	petError1 = prepareMerge(Pet1, &mergeConfig.MainPetConfig, true)
+	petError1 = prepareMerge(Pet1, &mergeConfig.MainPetConfig, MainForceEvaluate)
 	if petError1 != nil {
-		return false, petError1
+		if petError1.Error() == "CC达到阈值" {
+			// 主宠CC到达阈值后是否再合一次， 不合直接退出
+			if !FusionAfterCcThreshold {
+				return true, nil
+			}
+		} else {
+			return false, petError1
+		}
 	}
 	Pet2, petError2 := getFusionPet(&mergeConfig.AtePetConfig)
 	if petError2 != nil {
 		return false, petError2
 	}
-	petError2 = prepareMerge(Pet2, &mergeConfig.AtePetConfig, true)
-	if petError2 != nil {
+	petError2 = prepareMerge(Pet2, &mergeConfig.AtePetConfig, AteForceEvaluate)
+	if petError2 != nil && petError2.Error() != "CC达到阈值" {
 		return false, petError2
 	}
 	// todo 增加宠物检查
@@ -50,7 +57,7 @@ func Fusion(mergeConfig model.SingleMergeConfig) (bool, error) {
 	} else {
 		log.Info("合成失败，等待2秒")
 		time.Sleep(2 * time.Second)
-		return Fusion(mergeConfig)
+		return Fusion(mergeConfig, MainForceEvaluate, FusionAfterCcThreshold, AteForceEvaluate)
 	}
 }
 
@@ -79,7 +86,7 @@ func MergeGod(Config model.MergeGodConfig) (bool, error) {
 	EatDragonConfig := model.CopySingleMergeConfig(*Config.EatDragon)
 	EatDragonConfig.MainPetConfig.PetId = MainPet.Id
 	EatDragonConfig.AtePetConfig.PetId = AteDragon.Id
-	_, err := Fusion(EatDragonConfig)
+	_, err := Fusion(EatDragonConfig, false, true, false)
 	if err != nil {
 		return false, err
 	}
@@ -127,7 +134,7 @@ func mergeDragon(Config *model.MergeDragonConfig) (*model.Pet, error) {
 		}
 		EatConfig.MainPetConfig.PetId = MainPet.Id
 		EatConfig.AtePetConfig.PetId = AtePet.Id
-		fusion, err := Fusion(EatConfig)
+		fusion, err := Fusion(EatConfig, false, false, false)
 		if fusion && err == nil {
 			CurrentMainPet := PetServiceInstance.GetBattlePet()
 			MainPet.Id = CurrentMainPet.Id
@@ -184,7 +191,7 @@ func mergeWithPetType(config *model.SingleMergeConfig) (*model.Pet, error) {
 			AtePetConfig:  BmMergeConfig,
 			ProtectType1:  config.ProtectType1,
 			ProtectType2:  config.ProtectType2,
-		})
+		}, true, true, false)
 		if err != nil {
 			return nil, err
 		}
@@ -204,7 +211,7 @@ func mergeWithPetType(config *model.SingleMergeConfig) (*model.Pet, error) {
 			AtePetConfig:  BmMergeConfig2,
 			ProtectType1:  config.ProtectType1,
 			ProtectType2:  config.ProtectType2,
-		})
+		}, true, true, false)
 		if err != nil {
 			return nil, err
 		}
@@ -271,11 +278,11 @@ func prepareMerge(Pet *model.Pet, config *model.MergePetConfig, ForceEvaluate bo
 		if getPetError != nil {
 			CurrentPetStatus, _ = PetServiceInstance.GetPetDetail(Pet.Id)
 		}
-		if CurrentPetStatus.Cc >= config.PetCc && !ForceEvaluate {
+		if CurrentPetStatus.Cc >= config.PetCc && config.PetCc > 0 && !ForceEvaluate {
 			Pet.Cc = CurrentPetStatus.Cc
 			Pet.Name = CurrentPetStatus.Name
 			log.Info("当前宠物: %s 成长为 %f,达到cc阈值: %f", Pet.Name, Pet.Cc, config.PetCc)
-			break
+			return errors.New("CC达到阈值")
 		}
 	}
 	return nil
