@@ -119,8 +119,14 @@ func (*petRepositoryImpl4KDHS) GetFarmedPets() ([]*model.Pet, error) {
 	petList := []*model.Pet{}
 	for _, line := range lines {
 		if strings.Contains(line, "mcbbshow(") {
-			petId := strings.Split(strings.Replace(line, ")", "(", -1), "(")[1]
-			pet, _ := PetRepositoryImpl4KDHS.GetPetDetail(petId)
+			PetMessage := strings.Split(strings.Replace(line, ")", "(", -1), "(")
+			petId := PetMessage[1]
+			petName := PetMessage[9]
+
+			pet := &model.Pet{
+				Id:   petId,
+				Name: petName,
+			}
 			petList = append(petList, pet)
 		}
 	}

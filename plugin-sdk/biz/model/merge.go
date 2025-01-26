@@ -32,6 +32,19 @@ type EvaluateConfig struct {
 	ForceEvaluate bool   `json:"forceEvaluate"`
 }
 
+type NirvanaPetConfig struct {
+	MergePetConfig
+	PetName string
+	UseEgg  bool
+}
+type NirvanaConfig struct {
+	MainPet      NirvanaPetConfig
+	AtePet       NirvanaPetConfig
+	NirvanaPet   NirvanaPetConfig
+	ProtectType1 string
+	ProtectType2 string
+}
+
 // 宠物类型
 const (
 	WX  = "WX"  // 五系
