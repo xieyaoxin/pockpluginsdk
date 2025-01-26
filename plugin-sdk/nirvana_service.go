@@ -5,6 +5,8 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
+	"time"
 )
 
 var NirvanaServiceImplInstance = &nirvanaServiceImpl{}
@@ -14,6 +16,7 @@ type nirvanaServiceImpl struct {
 
 func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, error) {
 	//
+	startTime := time.Now()
 	err1 := PetServiceInstance.SaveUnBattlePet()
 	if err1 != nil {
 		return false, err1
@@ -39,7 +42,9 @@ func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, erro
 	if err != nil {
 		return false, err
 	}
+	minute, second := utils.CalculateTime(startTime)
 	log.Info("涅槃成功")
+	log.Info("本次耗时 %d 分钟 %d 秒", minute, second)
 	return once, nil
 }
 
