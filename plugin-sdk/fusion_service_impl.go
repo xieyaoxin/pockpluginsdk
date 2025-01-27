@@ -204,6 +204,11 @@ func mergeWithPetType(config *model.SingleMergeConfig) (*model.Pet, error) {
 	case "ALY":
 		break
 	case "BMW":
+		// 从牧场查询BMW
+		BMW := GetBMWFromCache()
+		if BMW != nil {
+			return BMW, nil
+		}
 		BmMergeConfig1 := initAteBmDefaultMergeConfig()
 		BmMergeConfig2 := initAteBmDefaultMergeConfig()
 		fusion, err := Fusion(model.SingleMergeConfig{

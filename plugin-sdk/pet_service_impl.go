@@ -100,8 +100,11 @@ func (*petService) GetPetEvaluateArticle(Pet *model.Pet, Route string) *model.Ar
 func (inst *petService) GetAllPets() []*model.Pet {
 	Farm, _ := inst.GetFarmPets()
 	Body, _ := inst.GetCarriedPetList()
-
-	return append(Body, Farm...)
+	Pets := append(Body, Farm...)
+	for _, Pet := range Pets {
+		Pet.Name = strings.ReplaceAll(Pet.Name, "'", "")
+	}
+	return Pets
 }
 
 func (inst *petService) GetPet(PetName string) *model.Pet {

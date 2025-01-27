@@ -132,7 +132,7 @@ func (*petRepositoryImpl4KDHS) GetFarmedPets() ([]*model.Pet, error) {
 			petList = append(petList, pet)
 		}
 	}
-	log.Info("查询到牧场宠物: %s", util.ListToJson(petList))
+	//log.Info("查询到牧场宠物: %s", util.ListToJson(petList))
 	return petList, nil
 }
 

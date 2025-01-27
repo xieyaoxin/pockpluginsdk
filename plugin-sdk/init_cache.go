@@ -13,6 +13,7 @@ var EXPERIENCE_TYPE_ARTICEL_MAP = make(map[string][]*model.Article)
 var PROTECT_ARTICEL_MAP = make(map[string][]*model.Article)
 var FARM_PETS = []*model.Pet{}
 var BM_NAMES = []string{"金波姆", "绿波姆", "水波姆", "火波姆", "土波姆"}
+var BMW_NAMES = []string{"金波姆王", "绿波姆王", "水波姆王", "火波姆王", "土波姆王"}
 var WXL_NAMES = []string{"青龙琅琅", "小青龙琅琅", "金龙霸王", "冰龙苍海", "艾薇儿", "三尾忍忍", "仙狐六尾", "天狐莫姬", "炎龙血焰", "黄龙莫虚"}
 var DRAGON_EGG_NAME = []string{"青龙琅琅之卵", "小青龙琅琅", "金龙霸王之卵", "冰龙苍海之卵", "艾薇儿之卵", "三尾忍忍", "仙狐六尾", "天狐莫姬之卵", "炎龙血焰之卵", "黄龙莫虚之卵"}
 var PetEvaluateRouteArticleMap = make(map[string]map[string]*model.Article)
@@ -39,7 +40,7 @@ func InitMergeArticleCache() {
 		PROTECT_ARTICEL_MAP[ProtectArticleType] = ArticleList
 	}
 	// 缓存宠物信息
-
+	FARM_PETS = PetServiceInstance.GetAllPets()
 }
 
 func InitNirvanaCache() {
@@ -56,7 +57,7 @@ func InitNirvanaCache() {
 	}
 
 	NIRVANA_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
-
+	FARM_PETS = PetServiceInstance.GetAllPets()
 }
 
 // GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
@@ -85,6 +86,13 @@ func GetBMFromCache() *model.Pet {
 	}
 	return nil
 }
+
+// GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
+func GetBMWFromCache() *model.Pet {
+	BMW := GetPetFromCacheByPetName(BMW_NAMES)
+	return BMW
+}
+
 func GetProtectArticleByType(ProtectType string) (*model.Article, error) {
 	if ProtectArticleList, exists := PROTECT_ARTICEL_MAP[ProtectType]; exists {
 		TempProtectArticle := make([]*model.Article, len(ProtectArticleList))
