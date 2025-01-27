@@ -3,6 +3,7 @@ package plugin_sdk
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	model2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
@@ -12,6 +13,11 @@ import (
 
 var impl = repository.GetBattleRepository()
 var BattleServiceImpl = &battleService{}
+
+func initFightCache() {
+	// todo 后续增加缓存
+	// 初始化捕捉球缓存
+}
 
 type battleService struct {
 }
@@ -114,15 +120,19 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 		}
 		time.Sleep(time.Duration(2000) * time.Millisecond)
 	}
-	BallList := getBallNameListByMonsterName(monster.Name)
+	BallList := getBallNameListByMonsterName(monster.Name, BattleConfig.Balls)
 	if len(BallList) > 0 {
 		BallId := BallList[0].ID
+		log.Info("开始捕捉 %s, 使用 %s 球", monster.Name, BallList[0].Name)
 		result := impl.CatchPet(monster, BallId)
 		if result {
-			//err := PetServiceInstance.SaveUnBattlePet()
-			//if err != nil {
-			//	return ""
-			//}
+			if BattleConfig.SaveAfterCatch {
+				err := PetServiceInstance.SaveUnBattlePet()
+				if err != nil {
+					return ""
+				}
+			}
+
 			return "11"
 		} else {
 			return "01"
@@ -133,9 +143,11 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 	}
 }
 
-func getBallNameListByMonsterName(monsterName string) []*model2.Article {
-	ballName := monsterName + "·精灵球"
-	ballList, _ := ArticleServiceInstance.QueryArticleList(ballName)
+func getBallNameListByMonsterName(monsterName string, balls []string) []*model2.Article {
+	// 部分
+	BallNameList := plugin_sdk_const.GetBallByMonster(monsterName, balls)
+	ballList, _ := ArticleServiceInstance.QueryArticleListByNameLists(BallNameList)
+
 	return ballList
 }
 

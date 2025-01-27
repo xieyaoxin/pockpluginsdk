@@ -135,8 +135,9 @@ func (inst *fusionRepositoryKdhsImpl) Nirvana(Pet1 model.Pet, Pet2 model.Pet, NP
 		log.Error("数据读取失败!！")
 		return false, errors.New("数据读取失败!！")
 	case "11":
-		log.Error("冷却时间未到！")
-		return false, errors.New("冷却时间未到！！")
+		log.Error("冷却时间未到！ 2秒后重试")
+		time.Sleep(2 * time.Second)
+		return inst.Nirvana(Pet1, Pet2, NPS, protect1, protect2)
 	default:
 		log.Error("转生失败！")
 		return inst.Nirvana(Pet1, Pet2, NPS, protect1, protect2)

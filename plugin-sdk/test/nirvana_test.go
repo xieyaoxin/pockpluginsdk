@@ -79,8 +79,13 @@ func TestNirvana(t *testing.T) {
 	}
 	log.Info("涅槃配置为 %s", string(marshal))
 	plugin_sdk.InitNirvanaCache()
-	_, err := plugin_sdk.NirvanaServiceImplInstance.Nirvana(Config)
-	if err != nil {
-		return
+	Count := 0
+	for Count < 50 {
+		_, err := plugin_sdk.NirvanaServiceImplInstance.Nirvana(Config)
+		if err != nil {
+			return
+		}
+		Count++
 	}
+
 }

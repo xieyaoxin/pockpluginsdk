@@ -12,4 +12,5 @@ type BattleConfig struct {
 	Balls              []string `json:"balls,omitempty"`
 	Rubbish            []string `json:"rubbish,omitempty"`
 	CatchHpThreshold   int      `json:"catch_hp_threshold,omitempty"`
+	SaveAfterCatch     bool     `json:"save_after_catch"`
 }

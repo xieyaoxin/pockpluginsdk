@@ -16,21 +16,21 @@ type battleRepositoryImpl struct{}
 
 func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*model.Monster, error) {
 	params := util.InitParam()
-	result1 := CallServerGetInterface("function/Pets_Mod.php", params)
+	CallServerGetInterface("function/Pets_Mod.php", params)
 
 	params["n"] = mapId
 	params["type"] = "1"
-	result1 = CallServerGetInterface("function/mapGate.php", params)
+	CallServerGetInterface("function/mapGate.php", params)
 
 	params["p"] = petId
 	params["mapid"] = mapId
-	result1 = CallServerGetInterface("function/manymapgate.php", params)
+	CallServerGetInterface("function/manymapgate.php", params)
 
 	//result1 = CallServerGetInterface("function/Team_Mod.php", params)
 	////params = util.InitParam()
 	//params["type"] = "5"
 	//result1 = CallServerGetInterface("function/mapGate.php", params)
-	log.Info("result is %s", result1)
+	//log.Info("result is %s", result1)
 	monster, err := enterMap(petId)
 	if monster != nil {
 		log.Info("当前怪物: %s 等级: %d, Hp: %d", monster.Name, monster.Level, monster.CurrentHp)
