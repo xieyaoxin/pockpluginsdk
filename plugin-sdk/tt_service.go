@@ -5,7 +5,10 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
+	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"strings"
+	"time"
 )
 
 // 天梯
@@ -17,20 +20,45 @@ type ttServiceImpl struct {
 }
 
 // todo 通天/副本/挂机 互斥
-func (*ttServiceImpl) StartTtLoop(config *model.TtConfig) {
-	for {
-		err := fight4TtOnce(config)
-		if err != nil {
-			log.Error(err.Error())
-			if err.Error() == "战斗失败" && config.LoopTt {
-				// 循环挂机
-				continue
+func (*ttServiceImpl) StartTtLoop(config *model.TtConfig, callbackInterface *biz_callback.TtReportCallbackInterface) bool {
+
+	// 后续加锁
+	if status2.GetConflictTask() {
+		return false
+	}
+	status2.SetBattleStatus(status2.Running)
+	reporter := biz_callback.NewDataReporter()
+	reporter.Start(callbackInterface)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				status2.SetTtBattleStatus(status2.NotReady)
+				time.Sleep(time.Second)
+				reporter.Stop(callbackInterface)
 			}
+		}()
+		err := PetServiceInstance.SaveUnBattlePet()
+		if err != nil {
 			return
 		}
-	}
+		for {
+			err = fight4TtOnce(config)
+			if err != nil {
+				log.Error(err.Error())
+				if err.Error() == "战斗失败" && config.LoopTt {
+					// 循环挂机
+					continue
+				}
+				return
+			}
+		}
+	}()
+	return true
 }
 
+func (*ttServiceImpl) StopTtLoop() {
+
+}
 func fight4TtOnce(config *model.TtConfig) error {
 	CurrentLevel := instance.EnterTt()
 	log.Info("当前层数： %s", CurrentLevel)

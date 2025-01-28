@@ -14,6 +14,8 @@ func TestTtFight(t *testing.T) {
 	TtConfig := &model.TtConfig{
 		PetId:   "8206429",
 		SkillId: "852",
+		LoopTt:  true,
 	}
-	plugin_sdk.TtServiceImplInstance.StartTtLoop(TtConfig)
+	plugin_sdk.TtServiceImplInstance.StartTtLoop(TtConfig, nil)
+	HoldOn()
 }

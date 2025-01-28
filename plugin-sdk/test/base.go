@@ -52,3 +52,11 @@ func GetLoginUser() model.User {
 	log.Info("登录成功 %v", login)
 	return User
 }
+
+func HoldOn() {
+	ch := make(chan struct{})
+	// 使用select语句阻塞主协程
+	select {
+	case <-ch:
+	}
+}
