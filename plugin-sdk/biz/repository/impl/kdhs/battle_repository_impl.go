@@ -14,6 +14,10 @@ var BattleRepositoryImplInstance = &battleRepositoryImpl{}
 
 type battleRepositoryImpl struct{}
 
+func (battleRepositoryImpl) EnterMap(petId string) (*model.Monster, error) {
+	return enterMap(petId)
+}
+
 func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*model.Monster, error) {
 	params := util.InitParam()
 	CallServerGetInterface("function/Pets_Mod.php", params)

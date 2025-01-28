@@ -62,3 +62,12 @@ func GetEquipRepository() EquipRepository {
 		return nil
 	}
 }
+
+func GetTtRepository() TtRepository {
+	switch status.SERVER_NAME {
+	case status.KDHS:
+		return kdhs.TtRepositoryImplKdhsInstance
+	default:
+		return nil
+	}
+}

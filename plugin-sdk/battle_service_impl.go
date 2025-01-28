@@ -87,12 +87,13 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 	}
 }
 
-func fight(BattleConfig model2.BattleConfig, monster *model2.Monster) {
+func fight(BattleConfig model2.BattleConfig, monster *model2.Monster) bool {
 	for {
 		result := impl.FightOnce(BattleConfig.SkillId, monster)
-		if result != "10" {
+		if result == "10" {
 			time.Sleep(time.Duration(2000) * time.Millisecond)
-			return
+		} else {
+			return result == "11"
 		}
 	}
 }
