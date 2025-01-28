@@ -10,6 +10,8 @@ func initMonsterBallMap() {
 	monsterBallMap["涅磐兽"] = []string{"涅槃兽·精灵球(绑定)", "涅盘兽·精灵球", "涅盘兽·精灵球（新手版）",
 		"涅盘兽·大师精灵球（绑定）", "涅盘兽·大师精灵球"}
 	monsterBallMap["涅槃兽（亥）"] = []string{"涅盘兽·精灵球", "涅盘兽地图·大师精灵球（绑定）"}
+	monsterBallMap["涅槃兽（午）"] = []string{"涅盘兽·精灵球", "涅盘兽地图·大师精灵球（绑定）"}
+	monsterBallMap["涅槃兽（卯）"] = []string{"涅盘兽·精灵球", "涅盘兽地图·大师精灵球（绑定）"}
 }
 
 func GetBallByMonster(monsterName string, balls []string) []string {
