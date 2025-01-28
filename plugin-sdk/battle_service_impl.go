@@ -45,6 +45,7 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 		for {
 			result := FightOneTime(BattleConfig)
 			reporter.SendData(result)
+			time.Sleep(1 * time.Second)
 		}
 	}()
 	return true
