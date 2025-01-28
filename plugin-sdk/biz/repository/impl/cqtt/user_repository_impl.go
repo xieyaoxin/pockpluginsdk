@@ -2,7 +2,7 @@ package cqtt
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 )
@@ -20,7 +20,7 @@ func (*userRepositoryImpl4CQTT) Login(user model.User) (*model.User, error) {
 	status.SetLoginUser(user)
 	token := Login(user, 0)
 	if token == "" {
-		log.Error("登录失败")
+		plugin_log.Error("登录失败")
 		return nil, errors.New("登录失败")
 	}
 	status.SetLoginUser(model.User{

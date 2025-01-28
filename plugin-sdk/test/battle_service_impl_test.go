@@ -3,7 +3,8 @@ package test
 import (
 	"fmt"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
@@ -92,11 +93,11 @@ func TestFight(t *testing.T) {
 			plugin_sdk.BattleServiceImpl.Fight(tt.args.BattleConfig, nil)
 		})
 	}
-	log.Info("当前战斗状态: %v", status.IsBattleRunning())
+	plugin_log.Info("当前战斗状态: %v", status.IsBattleRunning())
 	time.Sleep(time.Duration(30000000) * time.Second)
 	status.SetBattleStatus(status.Waiting2Stop)
-	log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
+	plugin_log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
 	time.Sleep(time.Duration(20) * time.Second)
-	log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
+	plugin_log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
 
 }

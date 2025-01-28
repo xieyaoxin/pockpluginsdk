@@ -2,7 +2,8 @@ package test
 
 import (
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"testing"
 )
 
@@ -12,5 +13,5 @@ func TestLogin(t *testing.T) {
 	if err != nil {
 		return
 	}
-	log.Info("登陆成功 %v", login)
+	plugin_log.Info("登陆成功 %v", login)
 }

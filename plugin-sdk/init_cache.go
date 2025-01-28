@@ -2,8 +2,8 @@ package plugin_sdk
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 )
@@ -68,7 +68,7 @@ func GetBMFromCache() *model.Pet {
 	}
 	err := PetServiceInstance.SaveUnBattlePet()
 	if err != nil {
-		log.Error("寄存非主站宠物失败")
+		plugin_log.Error("寄存非主站宠物失败")
 		return nil
 	}
 	catchBmConfig := InitCatchBmConfig()

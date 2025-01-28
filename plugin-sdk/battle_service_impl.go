@@ -1,8 +1,8 @@
 package plugin_sdk
 
 import (
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	model2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
@@ -56,7 +56,7 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 
 	monster, err := impl.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
 	if err != nil {
-		log.Error("进入地图失败")
+		plugin_log.Error("进入地图失败")
 		return "进入地图异常"
 	}
 	for {
@@ -69,14 +69,14 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 			return "战斗结束"
 		case "00":
 			if BattleConfig.RunWhenNotCatch {
-				log.Info("当前怪物不在捕捉列表中,跳过")
+				plugin_log.Info("当前怪物不在捕捉列表中,跳过")
 			} else {
 				fight(BattleConfig, monster)
 			}
 			return "不在捕捉范围内"
 		case "01":
 			if BattleConfig.RunWhenCatchFailed {
-				log.Info("捕捉失败,跳过本次战斗")
+				plugin_log.Info("捕捉失败,跳过本次战斗")
 				return "捕捉失败"
 			} else {
 				fight(BattleConfig, monster)
@@ -124,7 +124,7 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 	BallList := getBallNameListByMonsterName(monster.Name, BattleConfig.Balls)
 	if len(BallList) > 0 {
 		BallId := BallList[0].ID
-		log.Info("开始捕捉 %s, 使用 %s 球", monster.Name, BallList[0].Name)
+		plugin_log.Info("开始捕捉 %s, 使用 %s 球", monster.Name, BallList[0].Name)
 		result := impl.CatchPet(monster, BallId)
 		if result {
 			if BattleConfig.SaveAfterCatch {
@@ -139,7 +139,7 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 			return "01"
 		}
 	} else {
-		log.Error("找不到对应精灵球")
+		plugin_log.Error("找不到对应精灵球")
 		return "01"
 	}
 }

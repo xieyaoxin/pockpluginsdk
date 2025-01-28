@@ -2,8 +2,8 @@ package plugin_sdk
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"time"
@@ -55,7 +55,7 @@ func Fusion(mergeConfig model.SingleMergeConfig, MainForceEvaluate bool, FusionA
 	if response {
 		return true, nil
 	} else {
-		log.Info("合成失败，等待2秒")
+		plugin_log.Info("合成失败，等待2秒")
 		time.Sleep(2 * time.Second)
 		return Fusion(mergeConfig, MainForceEvaluate, FusionAfterCcThreshold, AteForceEvaluate)
 	}
@@ -76,7 +76,7 @@ func MergeGod(Config model.MergeGodConfig) (bool, error) {
 	//
 	MainPet, err1 := mergeDragon(Config.MainPet)
 	if err1 != nil {
-		log.Info("合成失败 %s", err1.Error())
+		plugin_log.Info("合成失败 %s", err1.Error())
 		return false, err1
 	}
 	AteDragon, err3 := mergeDragon(Config.AteDragon)
@@ -91,9 +91,9 @@ func MergeGod(Config model.MergeGodConfig) (bool, error) {
 		return false, err
 	}
 	FusionResult := PetServiceInstance.GetBattlePet()
-	log.Info("单次合神结束,合成结果: %s 成长 %f ", FusionResult.Name, FusionResult.Cc)
+	plugin_log.Info("单次合神结束,合成结果: %s 成长 %f ", FusionResult.Name, FusionResult.Cc)
 	minute, second := utils.CalculateTime(startTime)
-	log.Info("本次耗时 %d 分钟 %d 秒", minute, second)
+	plugin_log.Info("本次耗时 %d 分钟 %d 秒", minute, second)
 	return FusionResult.Name == "小神龙琅玡" || FusionResult.Name == "白虎", nil
 
 }
@@ -240,7 +240,7 @@ func prepareMerge(Pet *model.Pet, config *model.MergePetConfig, ForceEvaluate bo
 	ExperienceArticles, err := GetExperienceArticleByType(ExperienceType)
 	//ArticleServiceInstance.QueryArticleListByNameLists(ExperienceNameList)
 	if err != nil {
-		log.Error("获取经验失败, %s", err.Error())
+		plugin_log.Error("获取经验失败, %s", err.Error())
 		return err
 	}
 	if ExperienceArticles == nil {
@@ -250,7 +250,7 @@ func prepareMerge(Pet *model.Pet, config *model.MergePetConfig, ForceEvaluate bo
 		if Pet.Level >= config.PetLevel {
 			break
 		}
-		log.Info("开始吃经验")
+		plugin_log.Info("开始吃经验")
 		article := ExperienceArticles
 		if article.ArticleCount == 0 {
 			continue
@@ -276,7 +276,7 @@ func prepareMerge(Pet *model.Pet, config *model.MergePetConfig, ForceEvaluate bo
 			if EvaluateConfigInstance.ForceEvaluate {
 				return err
 			}
-			log.Error("进化失败 退出进化")
+			plugin_log.Error("进化失败 退出进化")
 			break
 		}
 		CurrentPetStatus, getPetError := PetServiceInstance.GetPetDetail(Pet.Id)
@@ -286,7 +286,7 @@ func prepareMerge(Pet *model.Pet, config *model.MergePetConfig, ForceEvaluate bo
 		if CurrentPetStatus.Cc >= config.PetCc && config.PetCc > 0 && !ForceEvaluate {
 			Pet.Cc = CurrentPetStatus.Cc
 			Pet.Name = CurrentPetStatus.Name
-			log.Info("当前宠物: %s 成长为 %f,达到cc阈值: %f", Pet.Name, Pet.Cc, config.PetCc)
+			plugin_log.Info("当前宠物: %s 成长为 %f,达到cc阈值: %f", Pet.Name, Pet.Cc, config.PetCc)
 			return errors.New("CC达到阈值")
 		}
 	}

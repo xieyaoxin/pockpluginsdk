@@ -2,7 +2,8 @@ package kdhs
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strings"
@@ -59,38 +60,38 @@ func (inst *fusionRepositoryKdhsImpl) Fusion(Pet1 model.Pet, Pet2 model.Pet, pro
 	params["p2"] = protect2.ID
 	params["type1"] = "check"
 	mergeResult := CallServerGetInterface("function/cmpGate.php", params)
-	log.Info("合成结果 主宠%s, 副宠%s 结果 %s", Pet1.Name, Pet2.Name, mergeResult)
+	plugin_log.Info("合成结果 主宠%s, 副宠%s 结果 %s", Pet1.Name, Pet2.Name, mergeResult)
 	switch mergeResult {
 	case "0", "6":
-		log.Error("合成失败")
+		plugin_log.Error("合成失败")
 		return false, nil
 	case "1":
-		log.Error("找不到对应宠物")
+		plugin_log.Error("找不到对应宠物")
 		return false, errors.New("找不到对应宠物")
 	case "2":
-		log.Error("这两个宠物好像不能合成噢")
+		plugin_log.Error("这两个宠物好像不能合成噢")
 		return false, errors.New("这两个宠物好像不能合成噢")
 	case "3":
-		log.Error("您的金币不足，不能合成")
+		plugin_log.Error("您的金币不足，不能合成")
 		return false, errors.New("您的金币不足，不能合成")
 	case "20":
-		log.Error("对不起，您的背包中没有此物品!")
+		plugin_log.Error("对不起，您的背包中没有此物品!")
 		return false, errors.New("找不到对应宠物")
 	case "5":
-		log.Info("恭喜你，合成成功")
+		plugin_log.Info("恭喜你，合成成功")
 		return true, nil
 	case "10":
-		log.Error("数据读取失败")
+		plugin_log.Error("数据读取失败")
 		return false, errors.New("数据读取失败")
 	case "11":
-		log.Error("冷却时间未到")
+		plugin_log.Error("冷却时间未到")
 		time.Sleep(1 * time.Second)
 		return inst.Fusion(Pet1, Pet2, protect1, protect2)
 	case "15":
-		log.Error("宠物成长未达到合成条件哦")
+		plugin_log.Error("宠物成长未达到合成条件哦")
 		return false, errors.New("宠物成长未达到合成条件哦")
 	default:
-		log.Error("找不到对应宠物")
+		plugin_log.Error("找不到对应宠物")
 		return false, nil
 	}
 }
@@ -111,35 +112,35 @@ func (inst *fusionRepositoryKdhsImpl) Nirvana(Pet1 model.Pet, Pet2 model.Pet, NP
 	//property.Log.Printf("涅磐结果 主宠%s, 副宠%s 结果 %s", util.MapToJsonString(mainPet), util.MapToJsonString(atePet), result)
 	switch result {
 	case "0":
-		log.Error("转生失败！")
+		plugin_log.Error("转生失败！")
 		return false, nil
 	case "1":
-		log.Error("您没有相应的宠物！")
+		plugin_log.Error("您没有相应的宠物！")
 		return false, errors.New("您没有相应的宠物！")
 	case "2":
-		log.Error("这两个宠物好像不能转生噢！")
+		plugin_log.Error("这两个宠物好像不能转生噢！")
 		return false, errors.New("这两个宠物好像不能转生噢！")
 	case "3":
-		log.Error("您的金币不足，不能转生！")
+		plugin_log.Error("您的金币不足，不能转生！")
 		return false, errors.New("您的金币不足，不能转生！")
 	case "7":
-		log.Error("请选择涅磐兽！")
+		plugin_log.Error("请选择涅磐兽！")
 		return false, errors.New("请选择涅磐兽！")
 	case "6":
-		log.Error("对不起，转生失败！")
+		plugin_log.Error("对不起，转生失败！")
 		return false, nil
 	case "5":
-		log.Info("恭喜你，转生成功!！")
+		plugin_log.Info("恭喜你，转生成功!！")
 		return true, nil
 	case "10":
-		log.Error("数据读取失败!！")
+		plugin_log.Error("数据读取失败!！")
 		return false, errors.New("数据读取失败!！")
 	case "11":
-		log.Error("冷却时间未到！ 2秒后重试")
+		plugin_log.Error("冷却时间未到！ 2秒后重试")
 		time.Sleep(2 * time.Second)
 		return inst.Nirvana(Pet1, Pet2, NPS, protect1, protect2)
 	default:
-		log.Error("转生失败！")
+		plugin_log.Error("转生失败！")
 		return inst.Nirvana(Pet1, Pet2, NPS, protect1, protect2)
 	}
 }
@@ -186,34 +187,34 @@ func (inst *fusionRepositoryKdhsImpl) Evaluate(mainPet *model.Pet, evaluateRoute
 
 	switch result {
 	case "3":
-		log.Error("宝宝的等级太低，还不能进化！")
+		plugin_log.Error("宝宝的等级太低，还不能进化！")
 		return false, errors.New("宝宝的等级太低，还不能进化！")
 	case "2":
-		log.Error("%s %s 缺少进化必须品！", mainPet.Id, mainPet.Name)
+		plugin_log.Error("%s %s 缺少进化必须品！", mainPet.Id, mainPet.Name)
 		return false, errors.New("缺少进化必须品！")
 	case "5":
-		log.Error("您没有足够金币进行进化！")
+		plugin_log.Error("您没有足够金币进行进化！")
 		return false, errors.New("您没有足够金币进行进化！")
 	case "6":
-		log.Error("%s %s 您已经达到最大的进化次数了！", mainPet.Id, mainPet.Name)
+		plugin_log.Error("%s %s 您已经达到最大的进化次数了！", mainPet.Id, mainPet.Name)
 		return false, errors.New("您已经达到最大的进化次数了！")
 	case "100":
-		log.Error("进化失败 重试")
+		plugin_log.Error("进化失败 重试")
 		return inst.Evaluate(mainPet, evaluateRoute, pid, bhid)
 	case "1":
-		log.Info("进化成功")
+		plugin_log.Info("进化成功")
 		pet, err := PetRepositoryImpl4KDHS.GetPetDetail(mainPet.Id)
 		if err != nil {
-			log.Error("获取宠物详情失败")
+			plugin_log.Error("获取宠物详情失败")
 			return false, errors.New("获取宠物详情失败")
 		}
 		mainPet.Cc = pet.Cc
 		mainPet.Name = pet.Name
 		mainPet.Level = pet.Level
-		log.Info("当前宠物 %s 成长: %f", pet.Name, mainPet.Cc)
+		plugin_log.Info("当前宠物 %s 成长: %f", pet.Name, mainPet.Cc)
 		return true, nil
 	default:
-		log.Error("%s %s 未知错误 %s", mainPet.Id, mainPet.Name, result)
+		plugin_log.Error("%s %s 未知错误 %s", mainPet.Id, mainPet.Name, result)
 		return false, errors.New("未知错误")
 	}
 }

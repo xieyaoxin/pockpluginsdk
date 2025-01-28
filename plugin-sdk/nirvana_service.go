@@ -2,8 +2,9 @@ package plugin_sdk
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strings"
@@ -41,13 +42,13 @@ func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, erro
 	// 获取副宠
 	AtePet, err1 := getNirvanaPet(Config.AtePet)
 	if err1 != nil {
-		log.Error("获取副宠失败")
+		plugin_log.Error("获取副宠失败")
 		return false, err1
 	}
 	// 获取捏
 	NirvanaPet, err2 := getNirvanaPet(Config.NirvanaPet)
 	if err2 != nil {
-		log.Error("获取捏失败")
+		plugin_log.Error("获取捏失败")
 		return false, err1
 	}
 	once, err := nirvanaOnce(MainPet, AtePet, NirvanaPet, Config.ProtectType1, Config.ProtectType2)
@@ -55,8 +56,8 @@ func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, erro
 		return false, err
 	}
 	minute, second := utils.CalculateTime(startTime)
-	log.Info("涅槃成功")
-	log.Info("本次耗时 %d 分钟 %d 秒", minute, second)
+	plugin_log.Info("涅槃成功")
+	plugin_log.Info("本次耗时 %d 分钟 %d 秒", minute, second)
 	return once, nil
 }
 
@@ -137,7 +138,7 @@ func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
 	ExperienceArticles, err := GetExperienceArticleByType(ExperienceType)
 	//ArticleServiceInstance.QueryArticleListByNameLists(ExperienceNameList)
 	if err != nil {
-		log.Error("获取经验失败, %s", err.Error())
+		plugin_log.Error("获取经验失败, %s", err.Error())
 		return err
 	}
 	if ExperienceArticles == nil {
@@ -147,7 +148,7 @@ func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
 		if Pet.Level >= config.PetLevel {
 			break
 		}
-		log.Info("开始吃经验")
+		plugin_log.Info("开始吃经验")
 		article := ExperienceArticles
 		if article.ArticleCount == 0 {
 			continue
@@ -171,7 +172,7 @@ func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
 			if EvaluateConfigInstance.ForceEvaluate {
 				return err
 			}
-			log.Error("进化失败 退出进化")
+			plugin_log.Error("进化失败 退出进化")
 			break
 		}
 		CurrentPetStatus, getPetError := PetServiceInstance.GetPetDetail(Pet.Id)
@@ -181,7 +182,7 @@ func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
 		if CurrentPetStatus.Cc >= config.PetCc && config.PetCc > 0 {
 			Pet.Cc = CurrentPetStatus.Cc
 			Pet.Name = CurrentPetStatus.Name
-			log.Info("当前宠物: %s 成长为 %f,达到cc阈值: %f", Pet.Name, Pet.Cc, config.PetCc)
+			plugin_log.Info("当前宠物: %s 成长为 %f,达到cc阈值: %f", Pet.Name, Pet.Cc, config.PetCc)
 			return errors.New("CC达到阈值")
 		}
 	}

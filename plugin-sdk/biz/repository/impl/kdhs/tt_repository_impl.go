@@ -1,7 +1,7 @@
 package kdhs
 
 import (
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strings"
 )
@@ -20,7 +20,7 @@ func (*ttRepositoryImpl) EnterTt() string {
 		line := ttArray[lineNumber]
 		if strings.Contains(line, "当前关卡") && !strings.Contains(line, "#tgt#") && !strings.Contains(line, "玩家每天有一次进入通天塔") {
 			CurrentFloor = strings.Split(strings.Split(line, "<")[1], ">")[1]
-			log.Info(CurrentFloor)
+			plugin_log.Info(CurrentFloor)
 			break
 		}
 	}

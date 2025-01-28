@@ -2,7 +2,8 @@ package plugin_sdk
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
@@ -44,7 +45,7 @@ func (*ttServiceImpl) StartTtLoop(config *model.TtConfig, callbackInterface *biz
 		for {
 			err = fight4TtOnce(config)
 			if err != nil {
-				log.Error(err.Error())
+				plugin_log.Error(err.Error())
 				if err.Error() == "战斗失败" && config.LoopTt {
 					// 循环挂机
 					continue
@@ -61,7 +62,7 @@ func (*ttServiceImpl) StopTtLoop() {
 }
 func fight4TtOnce(config *model.TtConfig) error {
 	CurrentLevel := instance.EnterTt()
-	log.Info("当前层数： %s", CurrentLevel)
+	plugin_log.Info("当前层数： %s", CurrentLevel)
 	// todo 判断当前层
 	// 判断是否需要花费水晶
 	checkResult := instance.ShouldPaySj("")
@@ -114,7 +115,7 @@ func enterTTMap(config *model.TtConfig) (*model.Monster, error) {
 		if err == nil {
 			result = ""
 		} else {
-			log.Error("进入31层失败 失败原因 %s", err)
+			plugin_log.Error("进入31层失败 失败原因 %s", err)
 		}
 	}
 	return monster, err

@@ -3,7 +3,8 @@ package test
 import (
 	"encoding/json"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"testing"
 )
@@ -77,7 +78,7 @@ func TestNirvana(t *testing.T) {
 	if err2 != nil {
 		return
 	}
-	log.Info("涅槃配置为 %s", string(marshal))
+	plugin_log.Info("涅槃配置为 %s", string(marshal))
 	plugin_sdk.InitNirvanaCache()
 	Count := 0
 	for Count < 50 {

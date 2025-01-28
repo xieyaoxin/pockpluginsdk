@@ -2,7 +2,8 @@ package kdhs
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strconv"
@@ -25,7 +26,7 @@ func (instance *petRepositoryImpl4KDHS) GetCarriedPets() ([]*model.Pet, error) {
 			id := strings.Replace(strings.Split(strings.Split(line, "Setbb")[1], ",")[0], "(", "", 1)
 			pet, err := instance.GetPetDetail(id)
 			if err != nil {
-				log.Error("获取宠物信息失败 宠物ID： ", id)
+				plugin_log.Error("获取宠物信息失败 宠物ID： ", id)
 				return nil, err
 			}
 			pet.IsBattle = true
@@ -40,7 +41,7 @@ func (instance *petRepositoryImpl4KDHS) GetCarriedPets() ([]*model.Pet, error) {
 			id := strings.Replace(strings.Split(strings.Split(line, "Setbb")[1], ",")[0], "(", "", 1)
 			pet, err := instance.GetPetDetail(id)
 			if err != nil {
-				log.Error("获取宠物信息失败 宠物ID： ", id)
+				plugin_log.Error("获取宠物信息失败 宠物ID： ", id)
 				return nil, err
 			}
 			Pets = append(Pets, pet)
@@ -141,7 +142,7 @@ func (*petRepositoryImpl4KDHS) SetBattlePet(PetId string) (bool, error) {
 	params["id"] = PetId
 	params["op"] = "z"
 	result := CallServerGetInterface("function/mcGate.php", params)
-	log.Info("设置主站宠物 %s %s", PetId, result)
+	plugin_log.Info("设置主站宠物 %s %s", PetId, result)
 	if result == "在牧场的宝宝不能设为主战哦！" {
 		return false, nil
 	}
@@ -157,12 +158,12 @@ func (instance *petRepositoryImpl4KDHS) CarryPet(PetId string) error {
 	params["id"] = PetId
 	params["op"] = "g"
 	result := CallServerGetInterface("function/mcGate.php", params)
-	log.Info("携带宠物 %s 操作结果 %s", PetId, result)
+	plugin_log.Info("携带宠物 %s 操作结果 %s", PetId, result)
 	if result == "数据错误3！" {
-		log.Error("携带宠物  %s 失败", PetId)
+		plugin_log.Error("携带宠物  %s 失败", PetId)
 	}
 	if result != "操作成功!" && result != "此宠物已经携带！" {
-		log.Error("携带宠物  %s 失败", PetId)
+		plugin_log.Error("携带宠物  %s 失败", PetId)
 		return errors.New(result)
 	}
 	return nil
@@ -173,7 +174,7 @@ func (instance *petRepositoryImpl4KDHS) SavePet(PetId string) error {
 	params["id"] = PetId
 	params["op"] = "s"
 	result := CallServerGetInterface("function/mcGate.php", params)
-	log.Info("寄存宠物 %s 操作结果 %s:", PetId, result)
+	plugin_log.Info("寄存宠物 %s 操作结果 %s:", PetId, result)
 	if result != "操作成功!" {
 		return errors.New("寄样宠物失败")
 	}

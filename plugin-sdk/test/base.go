@@ -3,7 +3,8 @@ package test
 import (
 	"fmt"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"io"
@@ -21,7 +22,7 @@ func GetLoginUser() model.User {
 	f, err := os.Open("config.txt")
 	if err != nil {
 		// 打开文件失败
-		log.Fatal(err.Error())
+		plugin_log.Fatal(err.Error())
 	}
 	var data []byte
 	buf := make([]byte, 1024)
@@ -29,7 +30,7 @@ func GetLoginUser() model.User {
 		// 将文件中读取的byte存储到buf中
 		n, err1 := f.Read(buf)
 		if err1 != nil && err != io.EOF {
-			log.Fatal(err1.Error())
+			plugin_log.Fatal(err1.Error())
 		}
 		if n == 0 {
 			break
@@ -49,7 +50,7 @@ func GetLoginUser() model.User {
 	if err != nil {
 		return model.User{}
 	}
-	log.Info("登录成功 %v", login)
+	plugin_log.Info("登录成功 %v", login)
 	return User
 }
 

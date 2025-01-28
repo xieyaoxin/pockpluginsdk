@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
@@ -83,33 +83,33 @@ func CallServerGetInterface(interfaceName string, param map[string]string) strin
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
 	req.Header.Add("Cookie", "PHPSESSID="+status2.GetLoginToken())
 	if err != nil {
-		log.Info("构造请求失败, err:%v\n\n", err)
+		plugin_log.Info("构造请求失败, err:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Info("调用接口错误,错误原因:%v\n\n", err)
+		plugin_log.Info("调用接口错误,错误原因:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Info("get resp failed,err:%v\n\n", err)
+		plugin_log.Info("get resp failed,err:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	result := string(b)
 	if resp.StatusCode != 200 {
-		log.Info("调用接口异常,重试  接口返回状态码 %d 返回内容 ： %s", resp.StatusCode, string(b))
+		plugin_log.Info("调用接口异常,重试  接口返回状态码 %d 返回内容 ： %s", resp.StatusCode, string(b))
 	}
 
 	if strings.Contains(result, "登录") && interfaceName != "/passport/login.php" {
-		log.Info("重新登录： uri: %s param: %s, 原因 %s", interfaceName, util.MapToJsonString(param), result)
+		plugin_log.Info("重新登录： uri: %s param: %s, 原因 %s", interfaceName, util.MapToJsonString(param), result)
 		Login(*status2.GetLoginUser(), 0)
 		return CallServerGetInterface(interfaceName, param)
 	}
 
 	if strings.EqualFold(result, "数据错误1！") {
-		log.Info("数据异常. 重新调用方法 uri: %s param: %s ", interfaceName, util.MapToJsonString(param))
+		plugin_log.Info("数据异常. 重新调用方法 uri: %s param: %s ", interfaceName, util.MapToJsonString(param))
 		return CallServerGetInterface(interfaceName, param)
 	}
 	utf8, _ := util.GbkToUtf8(b)
@@ -119,10 +119,10 @@ func CallServerGetInterface(interfaceName string, param map[string]string) strin
 // 调用登录接口  返回session
 func Login(user model.User, retryTimes int) string {
 	if retryTimes > 5 {
-		log.Error("登录重试次数大于5,停止登录")
+		plugin_log.Error("登录重试次数大于5,停止登录")
 		return ""
 	}
-	log.Info("start login ")
+	plugin_log.Info("start login ")
 	retryTimes = retryTimes + 1
 
 	//signature := callLogin()
@@ -142,7 +142,7 @@ func Login(user model.User, retryTimes int) string {
 	loginResult := CallServerGetInterface("/login/login.php", util.InitParam())
 	if strings.Contains(loginResult, "/passport/login.php") {
 		// todo 错误原因解析
-		log.Info(loginResult)
+		plugin_log.Info(loginResult)
 		return ""
 	}
 	CallServerGetInterface("index.php", InitParam())

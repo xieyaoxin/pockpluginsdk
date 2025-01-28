@@ -2,7 +2,8 @@ package kdhs
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 )
@@ -17,7 +18,7 @@ type (
 func (*userRepositoryImpl4KDHS) Login(user model.User) (*model.User, error) {
 	token := Login(user, 0)
 	if token == "" {
-		log.Error("登录失败")
+		plugin_log.Error("登录失败")
 		return nil, errors.New("登录失败")
 	}
 	status.SetLoginUser(model.User{

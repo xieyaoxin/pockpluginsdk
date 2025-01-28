@@ -1,8 +1,8 @@
 package plugin_sdk
 
 import (
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 )
 
@@ -20,6 +20,6 @@ func (inst *equipServiceImpl) OffEquip(PetId string) {
 	equips := inst.GetEquip(PetId)
 	for _, equip := range equips {
 		result := repository.GetEquipRepository().OffEquip(PetId, equip.EquipPId)
-		log.Info("脱装备： %s , 结果 %b", equip.Name, result)
+		plugin_log.Info("脱装备： %s , 结果 %b", equip.Name, result)
 	}
 }

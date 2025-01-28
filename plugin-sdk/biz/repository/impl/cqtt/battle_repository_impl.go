@@ -2,7 +2,7 @@ package cqtt
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strconv"
@@ -23,7 +23,7 @@ func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*mode
 	CallServerGetInterface("function/team.php", params)
 	monster, err := enterMap(petId)
 	if monster != nil {
-		log.Info("当前怪物: %s 等级: %d, Hp: %d", monster.Name, monster.Level, monster.CurrentHp)
+		plugin_log.Info("当前怪物: %s 等级: %d, Hp: %d", monster.Name, monster.Level, monster.CurrentHp)
 	}
 	return monster, err
 }
@@ -37,13 +37,13 @@ func (battleRepositoryImpl) FightOnce(SkillId string, monster *model.Monster) st
 	result := CallServerGetInterface("function/FightGate.php", params)
 	resultArray := strings.Split(result, "#")
 	if result == "" || len(resultArray) < 2 {
-		log.Info("解析异常  重新进入战斗, 原始响应： %s", result)
+		plugin_log.Info("解析异常  重新进入战斗, 原始响应： %s", result)
 		return result
 	}
 	// 计算怪物剩余血量
 	leftHp, err := strconv.Atoi(strings.Split(resultArray[1], ",")[0])
 	if err != nil {
-		log.Info("解析怪物血量错误 原始信息:%s", result)
+		plugin_log.Info("解析怪物血量错误 原始信息:%s", result)
 	}
 	monster.CurrentHp = leftHp
 	monster.CalculateCurrentHpRate()
@@ -52,7 +52,7 @@ func (battleRepositoryImpl) FightOnce(SkillId string, monster *model.Monster) st
 		return "00"
 	}
 	if strings.Contains(resultArray[2], "获得经验：") {
-		log.Info(resultArray[2])
+		plugin_log.Info(resultArray[2])
 		return "11"
 	}
 	return "10"
@@ -62,7 +62,7 @@ func (instance *battleRepositoryImpl) CatchPet(monster *model.Monster, BallId st
 	params := util.InitParam()
 	params["pid"] = BallId
 	catchResult := CallServerGetInterface("function/get.Catch.php", params)
-	log.Info("遭遇宠物: %s  捕捉结果: %s", monster.Name, catchResult)
+	plugin_log.Info("遭遇宠物: %s  捕捉结果: %s", monster.Name, catchResult)
 	return catchResult == "10"
 }
 
@@ -111,7 +111,7 @@ func enterMap(petId string) (*model.Monster, error) {
 	for strings.Contains(result, "loadtime") {
 		time2Sleep := strings.Split(strings.Replace(strings.Replace(strings.Split(result, "loadtime")[3], "(", "/", 1), ")", "/", 1), "/")[1]
 		sleepTime1, _ := strconv.ParseInt(time2Sleep, 10, 64)
-		log.Info("等待 %s 秒后进入地图", time2Sleep)
+		plugin_log.Info("等待 %s 秒后进入地图", time2Sleep)
 		sleepTime = sleepTime1*1000 + 500
 		time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 		result = CallServerGetInterface("function/Fight_Mod.php", params)
@@ -128,7 +128,7 @@ func enterMap(petId string) (*model.Monster, error) {
 		}
 	}
 	if len(monsterPropertyArray) < 12 {
-		log.Error("进入地图失败 原因是: %s", result)
+		plugin_log.Error("进入地图失败 原因是: %s", result)
 		return &model.Monster{}, errors.New(result)
 	}
 	return &model.Monster{Name: monsterPropertyArray[0].(string), Level: int(monsterPropertyArray[1].(float64)),

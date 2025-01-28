@@ -2,7 +2,8 @@ package kdhs
 
 import (
 	"encoding/json"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
@@ -10,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 //const endpoint = "http://124.223.98.176:1000"
@@ -21,6 +23,7 @@ func InitParam() map[string]string {
 }
 
 func callServerFormInterface(interfaceName string, params map[string]string) string {
+	StartTime := time.Now()
 	if status2.IsBattleParsing() {
 		panic("正在停止战斗任务")
 	}
@@ -28,10 +31,10 @@ func callServerFormInterface(interfaceName string, params map[string]string) str
 	for k, v := range params {
 		payload.Set(k, v)
 	}
-
+	requestParams := strings.NewReader(payload.Encode())
 	req, err := http.NewRequest(http.MethodPost,
 		endpoint+interfaceName,
-		strings.NewReader(payload.Encode()))
+		requestParams)
 	if err != nil {
 		return ""
 	}
@@ -50,11 +53,13 @@ func callServerFormInterface(interfaceName string, params map[string]string) str
 	defer resp.Body.Close()
 	data, _ := ioutil.ReadAll(resp.Body)
 	utf8, _ := util.GbkToUtf8(data)
+	handleCostTime(interfaceName, params, StartTime)
 	return string(utf8)
 }
 
 // 调用口袋接口,
 func CallServerGetInterface(interfaceName string, param map[string]string) string {
+	StartTime := time.Now()
 	if status2.IsBattleParsing() {
 		panic("正在停止战斗任务")
 	}
@@ -80,46 +85,49 @@ func CallServerGetInterface(interfaceName string, param map[string]string) strin
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
 	req.Header.Add("Cookie", "PHPSESSID="+status2.GetLoginToken())
 	if err != nil {
-		log.Info("构造请求失败, err:%v\n\n", err)
+		plugin_log.Info("构造请求失败, err:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Info("调用接口错误,错误原因:%v\n\n", err)
+		plugin_log.Info("调用接口错误,错误原因:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	defer resp.Body.Close()
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Info("get resp failed,err:%v\n\n", err)
+		plugin_log.Info("get resp failed,err:%v\n\n", err)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	result := string(b)
 	if resp.StatusCode != 200 {
-		log.Info("调用接口异常,重试  接口返回状态码 %d 返回内容 ： %s", resp.StatusCode, string(b))
+		plugin_log.Info("调用接口异常,重试  接口返回状态码 %d 返回内容 ： %s", resp.StatusCode, string(b))
 	}
 
 	if strings.Contains(result, "登录") && interfaceName != "/passport/login.php" {
-		log.Info("重新登录： uri: %s param: %s, 原因 %s", interfaceName, util.MapToJsonString(param), result)
+		plugin_log.Info("重新登录： uri: %s param: %s, 原因 %s", interfaceName, util.MapToJsonString(param), result)
+		handleCostTime(interfaceName, param, StartTime)
 		Login(*status2.GetLoginUser(), 0)
 		return CallServerGetInterface(interfaceName, param)
 	}
 
 	if strings.EqualFold(result, "数据错误1！") {
-		log.Info("数据异常. 重新调用方法 uri: %s param: %s ", interfaceName, util.MapToJsonString(param))
+		plugin_log.Info("数据异常. 重新调用方法 uri: %s param: %s ", interfaceName, util.MapToJsonString(param))
+		handleCostTime(interfaceName, param, StartTime)
 		return CallServerGetInterface(interfaceName, param)
 	}
 	utf8, _ := util.GbkToUtf8(b)
+	handleCostTime(interfaceName, param, StartTime)
 	return string(utf8)
 }
 
 // 调用登录接口  返回session
 func Login(user model.User, retryTimes int) string {
 	if retryTimes > 5 {
-		log.Error("登录重试次数大于5,停止登录")
+		plugin_log.Error("登录重试次数大于5,停止登录")
 		return ""
 	}
-	log.Info("开始登陆 ")
+	plugin_log.Info("开始登陆 ")
 	retryTimes = retryTimes + 1
 	signature := callLogin()
 	//signature := callLogin()
@@ -139,7 +147,7 @@ func Login(user model.User, retryTimes int) string {
 	if loginResponse["code"] == nil || int(loginResponse["code"].(float64)) != 0 {
 		return Login(user, retryTimes)
 	}
-	log.Info("登陆成功 ")
+	plugin_log.Info("登陆成功 ")
 	return user.TempToken
 }
 
@@ -158,4 +166,12 @@ func callLogin() string {
 
 func GetSessionId(userName string) string {
 	return util.MD5(userName)
+}
+
+func handleCostTime(interfaceName string, params interface{}, StartTime time.Time) {
+	EndTime := time.Now()
+	CostTime := EndTime.Sub(StartTime) / time.Millisecond
+	paramsString := util.MapToJsonString(params)
+	plugin_log.Debug("访问接口 %s , 参数 %s ，耗时 %d 毫秒", interfaceName, paramsString, CostTime)
+
 }

@@ -2,8 +2,8 @@ package plugin_sdk
 
 import (
 	"errors"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 )
@@ -44,12 +44,12 @@ func (*articleService) UserArticle(article *model.Article) error {
 
 func (*articleService) UseSjk() error {
 	//	 先开水晶卡
-	log.Info("身上水晶不够,查询身上水晶卡信息")
+	plugin_log.Info("身上水晶不够,查询身上水晶卡信息")
 	ArticleList, err := ArticleServiceInstance.QueryArticleListByNameLists(plugin_sdk_const.SJK_LIST_NAME)
 	if err != nil || ArticleList == nil || len(ArticleList) == 0 {
 		return errors.New("获取水晶卡失败")
 	}
-	log.Info("使用水晶卡 %s", ArticleList[0].Name)
+	plugin_log.Info("使用水晶卡 %s", ArticleList[0].Name)
 	err = ArticleServiceInstance.UserArticle(ArticleList[0])
 	if err != nil {
 		return err

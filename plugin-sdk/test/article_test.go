@@ -2,7 +2,8 @@ package test
 
 import (
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+
 	"testing"
 )
 
@@ -14,7 +15,7 @@ func TestQueryArticleList(t *testing.T) {
 		return
 	}
 	for _, article := range articleList {
-		log.Info("获取物品列表 %v", article)
+		plugin_log.Info("获取物品列表 %v", article)
 
 	}
 }

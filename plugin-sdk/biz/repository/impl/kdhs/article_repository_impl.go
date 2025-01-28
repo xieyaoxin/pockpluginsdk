@@ -1,8 +1,8 @@
 package kdhs
 
 import (
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"strconv"
 	"strings"
@@ -19,7 +19,7 @@ func (*articleRepositoryImpl4KDHS) UseArticle(articleId string) error {
 	params := util.InitParam()
 	params["id"] = articleId
 	result := CallServerGetInterface("function/usedProps.php", params)
-	log.Info("使用物品 id : %s 操作结果: %s", articleId, result)
+	plugin_log.Info("使用物品 id : %s 操作结果: %s", articleId, result)
 	return nil
 }
 func (rep *articleRepositoryImpl4KDHS) GetArticles(name string) ([]*model.Article, error) {
