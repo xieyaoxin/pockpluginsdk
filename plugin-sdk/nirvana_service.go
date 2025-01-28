@@ -93,20 +93,44 @@ func getNirvanaPet(config model.NirvanaPetConfig) (*model.Pet, error) {
 				}
 
 			} else {
-				ArticleList, err := ArticleServiceInstance.QueryArticleList(PetName)
-				if err != nil {
-					return nil, err
-				}
-				for _, Article := range ArticleList {
-					if Article.ArticleType == "宠物卵" {
-						err = ArticleServiceInstance.UserArticle(Article)
-						if err != nil {
-							return nil, err
-						}
-						break
+				if PetName == "小神龙" {
+					GOD_EGG := GetDragonEggArticle()
+					if GOD_EGG == nil {
+						return nil, errors.New("找不到小神蛋")
 					}
+					err := ArticleServiceInstance.UserArticle(GOD_EGG)
+					if err != nil {
+						return nil, err
+					}
+					// 偶发获取捏失败
+					for Pet == nil {
+						Pets, _ := PetServiceInstance.GetCarriedPetList()
+						for _, CarriedPet := range Pets {
+							if !CarriedPet.IsBattle && strings.Contains(CarriedPet.Name, "小神龙") {
+								Pet = CarriedPet
+							}
+						}
+						if Pet == nil {
+							time.Sleep(100 * time.Millisecond)
+						}
+					}
+				} else {
+					ArticleList, err := ArticleServiceInstance.QueryArticleList(PetName)
+					if err != nil {
+						return nil, err
+					}
+					for _, Article := range ArticleList {
+						if Article.ArticleType == "宠物卵" {
+							err = ArticleServiceInstance.UserArticle(Article)
+							if err != nil {
+								return nil, err
+							}
+							break
+						}
+					}
+					Pet = PetServiceInstance.GetPet(PetName)
 				}
-				Pet = PetServiceInstance.GetPet(PetName)
+
 			}
 		} else {
 			return nil, errors.New("未找到宠物")
