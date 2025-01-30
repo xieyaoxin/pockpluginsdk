@@ -2,6 +2,7 @@ package plugin_sdk
 
 import (
 	"errors"
+	"github.com/sirupsen/logrus"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
@@ -47,6 +48,14 @@ func InitMergeArticleCache() {
 }
 
 func InitNirvanaCache() {
+	initExpCache()
+	initProtectCache()
+	NIRVANA_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
+	DRAGON_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.DragonEggList)
+	FARM_PETS = PetServiceInstance.GetAllPets()
+}
+
+func initExpCache() {
 	TempExperienceTypeArticleMap := make(map[string][]*model.Article)
 	for _, ExperienceType := range repository.GetFusionRepository().GetExperienceTypeList() {
 		ArticleNameList := repository.GetFusionRepository().GetExperienceList(ExperienceType)
@@ -54,7 +63,9 @@ func InitNirvanaCache() {
 		TempExperienceTypeArticleMap[ExperienceType] = ArticleList
 	}
 	EXPERIENCE_TYPE_ARTICEL_MAP = TempExperienceTypeArticleMap
+}
 
+func initProtectCache() {
 	TempProtectArticleMap := make(map[string][]*model.Article)
 	for _, ProtectArticleType := range repository.GetFusionRepository().GetNirvanaArticleTypeList() {
 		ArticleNameList := repository.GetFusionRepository().GetNirvanaArticleList(ProtectArticleType)
@@ -62,9 +73,6 @@ func InitNirvanaCache() {
 		TempProtectArticleMap[ProtectArticleType] = ArticleList
 	}
 	PROTECT_ARTICEL_MAP = TempProtectArticleMap
-	NIRVANA_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
-	DRAGON_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.DragonEggList)
-	FARM_PETS = PetServiceInstance.GetAllPets()
 }
 
 // GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
@@ -101,6 +109,27 @@ func GetBMWFromCache() *model.Pet {
 }
 
 func GetProtectArticleByType(ProtectType string) (*model.Article, error) {
+	Protect := getProtectArticleByType(ProtectType)
+	if Protect == nil {
+		logrus.Info("查找物品失败,当前查找的物品为: %s, 缓存明细如下: ", ProtectType)
+		for key, value := range PROTECT_ARTICEL_MAP {
+			logrus.Info("\t物品类型:  ", key)
+			for _, item := range value {
+				logrus.Info("\t\t明细:  %s", item.GetDetail())
+			}
+		}
+		// 重新初始化物品缓存
+		initProtectCache()
+		Protect = getProtectArticleByType(ProtectType)
+	}
+	if Protect == nil {
+		return nil, errors.New("找不到合宠物品: " + ProtectType)
+	} else {
+		return Protect, nil
+	}
+}
+
+func getProtectArticleByType(ProtectType string) *model.Article {
 	if ProtectArticleList, exists := PROTECT_ARTICEL_MAP[ProtectType]; exists {
 		TempProtectArticle := make([]*model.Article, len(ProtectArticleList))
 		copy(TempProtectArticle, ProtectArticleList)
@@ -109,14 +138,14 @@ func GetProtectArticleByType(ProtectType string) (*model.Article, error) {
 				PROTECT_ARTICEL_MAP[ProtectType] = model.ArticleSliceRemoveItem(ProtectArticleList, ProtectArticle)
 				continue
 			} else {
-				ProtectArticle.ArticleCount = ProtectArticle.ArticleCount - 1
-				return ProtectArticle, nil
+				//ProtectArticle.ArticleCount = ProtectArticle.ArticleCount - 1
+				return ProtectArticle
 			}
 		}
 	}
-	// todo 增加从背包获取物品
-	return nil, errors.New("找不到合宠物品: " + ProtectType)
+	return nil
 }
+
 func GetPetFromCacheByPetName(PetNameList []string) *model.Pet {
 	result := []*model.Pet{}
 	var tempPet *model.Pet
@@ -132,22 +161,27 @@ func GetPetFromCacheByPetName(PetNameList []string) *model.Pet {
 	return tempPet
 }
 func GetExperienceArticleByType(ExperienceType string) (*model.Article, error) {
-	if ExperienceTypeList, exists := EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType]; exists {
-		TempExperienceArticle := make([]*model.Article, len(ExperienceTypeList))
-		copy(TempExperienceArticle, ExperienceTypeList)
-		for _, ExperienceArticle := range TempExperienceArticle {
-			if ExperienceArticle.ArticleCount == 0 {
-				PROTECT_ARTICEL_MAP[ExperienceType] = model.ArticleSliceRemoveItem(ExperienceTypeList, ExperienceArticle)
-				continue
-			} else {
-				ExperienceArticle.ArticleCount = ExperienceArticle.ArticleCount - 1
-				return ExperienceArticle, nil
+	Exp := getExperienceArticleByType(ExperienceType)
+	if Exp == nil {
+		logrus.Info("查找物品失败,当前查找的物品为: %s, 缓存明细如下: ", ExperienceType)
+		for key, value := range EXPERIENCE_TYPE_ARTICEL_MAP {
+			logrus.Info("\t物品类型:  ", key)
+			for _, item := range value {
+				logrus.Info("\t\t明细:  %s", item.GetDetail())
 			}
 		}
+		// 重新初始化物品缓存
+		initExpCache()
+		Exp = getExperienceArticleByType(ExperienceType)
 	}
-	// todo 增加从背包获取物品
-	return nil, errors.New("找不到合宠物品: " + ExperienceType)
+	if Exp == nil {
+		return nil, errors.New("找不到合宠物品: " + ExperienceType)
+	} else {
+		return Exp, nil
+	}
+
 }
+
 func GetNirvanaEggArticle() *model.Article {
 	TempNirvanaArticle := make([]*model.Article, len(NIRVANA_EGG_LIST))
 	copy(TempNirvanaArticle, NIRVANA_EGG_LIST)
@@ -156,7 +190,7 @@ func GetNirvanaEggArticle() *model.Article {
 			NIRVANA_EGG_LIST = model.ArticleSliceRemoveItem(NIRVANA_EGG_LIST, NirvanaArticle)
 			continue
 		} else {
-			NirvanaArticle.ArticleCount = NirvanaArticle.ArticleCount - 1
+			//NirvanaArticle.ArticleCount = NirvanaArticle.ArticleCount - 1
 			return NirvanaArticle
 		}
 	}
@@ -171,8 +205,25 @@ func GetDragonEggArticle() *model.Article {
 			DRAGON_EGG_LIST = model.ArticleSliceRemoveItem(DRAGON_EGG_LIST, DragonArticle)
 			continue
 		} else {
-			DragonArticle.ArticleCount = DragonArticle.ArticleCount - 1
+			//DragonArticle.ArticleCount = DragonArticle.ArticleCount - 1
 			return DragonArticle
+		}
+	}
+	return nil
+}
+
+func getExperienceArticleByType(ExperienceType string) *model.Article {
+	if ExperienceTypeList, exists := EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType]; exists {
+		TempExperienceArticle := make([]*model.Article, len(ExperienceTypeList))
+		copy(TempExperienceArticle, ExperienceTypeList)
+		for _, ExperienceArticle := range TempExperienceArticle {
+			if ExperienceArticle.ArticleCount == 0 {
+				PROTECT_ARTICEL_MAP[ExperienceType] = model.ArticleSliceRemoveItem(ExperienceTypeList, ExperienceArticle)
+				continue
+			} else {
+				//ExperienceArticle.ArticleCount = ExperienceArticle.ArticleCount - 1
+				return ExperienceArticle
+			}
 		}
 	}
 	return nil
