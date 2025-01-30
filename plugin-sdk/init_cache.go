@@ -47,18 +47,21 @@ func InitMergeArticleCache() {
 }
 
 func InitNirvanaCache() {
+	TempExperienceTypeArticleMap := make(map[string][]*model.Article)
 	for _, ExperienceType := range repository.GetFusionRepository().GetExperienceTypeList() {
 		ArticleNameList := repository.GetFusionRepository().GetExperienceList(ExperienceType)
 		ArticleList, _ := ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
-		EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType] = ArticleList
+		TempExperienceTypeArticleMap[ExperienceType] = ArticleList
 	}
+	EXPERIENCE_TYPE_ARTICEL_MAP = TempExperienceTypeArticleMap
 
+	TempProtectArticleMap := make(map[string][]*model.Article)
 	for _, ProtectArticleType := range repository.GetFusionRepository().GetNirvanaArticleTypeList() {
 		ArticleNameList := repository.GetFusionRepository().GetNirvanaArticleList(ProtectArticleType)
 		ArticleList, _ := ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
-		PROTECT_ARTICEL_MAP[ProtectArticleType] = ArticleList
+		TempProtectArticleMap[ProtectArticleType] = ArticleList
 	}
-
+	PROTECT_ARTICEL_MAP = TempProtectArticleMap
 	NIRVANA_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
 	DRAGON_EGG_LIST, _ = ArticleServiceInstance.QueryArticleListByNameLists(model.DragonEggList)
 	FARM_PETS = PetServiceInstance.GetAllPets()
