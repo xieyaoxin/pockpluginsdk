@@ -71,3 +71,12 @@ func GetTtRepository() TtRepository {
 		return nil
 	}
 }
+
+func GetDungeonInstanceRepository() DungeonInstanceRepository {
+	switch status.SERVER_NAME {
+	case status.KDHS:
+		return kdhs.DungeonInstanceRepositoryKdhsImplInstance
+	default:
+		return nil
+	}
+}
