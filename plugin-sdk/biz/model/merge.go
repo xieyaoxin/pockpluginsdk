@@ -1,5 +1,15 @@
 package model
 
+type FusionChainConfig struct {
+	MergeGodConfig
+	Finish FusionFinishConfig `json:"finish"`
+}
+
+type FusionFinishConfig struct {
+	MergeCount int `json:"merge_count"`
+	GodCount   int `json:"god_count"`
+}
+
 type MergeGodConfig struct {
 	MainPet   *MergeDragonConfig // 初始化主宠
 	AteDragon *MergeDragonConfig // 副龙配置
@@ -122,4 +132,13 @@ var NirvanaEggList = []string{
 
 var DragonEggList = []string{
 	"小神龙琅玡之卵(限时)", "小神龙琅玡之卵(绑)", "小神龙琅玡之卵",
+}
+
+func CopyFusionConfig(config FusionChainConfig) *MergeGodConfig {
+
+	return &MergeGodConfig{
+		MainPet:   config.MainPet,
+		AteDragon: config.AteDragon,
+		EatDragon: config.EatDragon,
+	}
 }

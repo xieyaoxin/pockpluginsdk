@@ -17,14 +17,16 @@ type fightStatus struct {
 	BattleStatus   string
 	FbBattleStatus string
 	TtBattleStatus string
+	FusionStatus   string
+	NirvanaStatus  string
 }
 
 func IsBattleRunning() bool {
 	return !(FightStatus.BattleStatus == NotReady && FightStatus.FbBattleStatus == NotReady && FightStatus.TtBattleStatus == NotReady)
 }
 
-func IsBattleParsing() bool {
-	return FightStatus.BattleStatus == Waiting2Stop || FightStatus.FbBattleStatus == Waiting2Stop || FightStatus.TtBattleStatus == Waiting2Stop
+func IsParsing() bool {
+	return FightStatus.BattleStatus == Waiting2Stop || FightStatus.FbBattleStatus == Waiting2Stop || FightStatus.TtBattleStatus == Waiting2Stop || FightStatus.FusionStatus == Waiting2Stop || FightStatus.NirvanaStatus == Waiting2Stop
 }
 
 func IsBattleNotReady() bool {

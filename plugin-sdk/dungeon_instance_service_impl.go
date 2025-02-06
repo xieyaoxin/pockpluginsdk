@@ -16,7 +16,11 @@ var MaxBattleFailedTimes = 5
 type dungeonInstanceServiceImpl struct {
 }
 
-func (*dungeonInstanceServiceImpl) FightDungeonOnce(Config *model.DungeonInstanceConfig) error {
+func (*dungeonInstanceServiceImpl) FightDungeon(Config *model.DungeonInstanceConfig) {
+
+}
+
+func (*dungeonInstanceServiceImpl) FightDungeonOnce(Config *model.DungeonInstanceFightConfig) error {
 
 	// 校验副本状态
 	CurrentStage, CountDown := repositoryInstance.GetDungeonInstanceStatus(Config.MapId)
@@ -31,7 +35,7 @@ func (*dungeonInstanceServiceImpl) FightDungeonOnce(Config *model.DungeonInstanc
 			return errors.New(plugin_sdk_const.GET_DUNGEON_NOT_OPEN)
 		} else {
 			plugin_log.Info("消耗水晶开启副本")
-			err := OpenDungeonInstance(Config)
+			err := openDungeonInstance(Config)
 			if err != nil {
 				return err
 			}
@@ -84,7 +88,7 @@ func (*dungeonInstanceServiceImpl) FightDungeonOnce(Config *model.DungeonInstanc
 	}
 }
 
-func OpenDungeonInstance(Config *model.DungeonInstanceConfig) error {
+func openDungeonInstance(Config *model.DungeonInstanceFightConfig) error {
 	_, err := repositoryInstance.SpendSj(Config.MapId)
 	if err != nil {
 		if err.Error() == plugin_sdk_const.NOT_ENOUGH_SJ && Config.UseSj {
@@ -93,7 +97,7 @@ func OpenDungeonInstance(Config *model.DungeonInstanceConfig) error {
 			if err != nil {
 				return err
 			}
-			return OpenDungeonInstance(Config)
+			return openDungeonInstance(Config)
 		} else {
 			return err
 		}

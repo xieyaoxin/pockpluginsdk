@@ -9,7 +9,7 @@ import (
 
 func TestDungeonInstanceFightOnce(t *testing.T) {
 	GetLoginUser()
-	Config := &model.DungeonInstanceConfig{
+	Config := &model.DungeonInstanceFightConfig{
 		PetId:      "8512800",
 		SkillId:    "799",
 		MapId:      "144",

@@ -27,6 +27,7 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 	if status2.GetConflictTask() {
 		return false
 	}
+	status2.SetTaskType(status2.BATTLE)
 	status2.SetBattleStatus(status2.Running)
 	reporter := biz_callback.NewDataReporter()
 	reporter.Start(callbackInterface)
@@ -34,6 +35,7 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 		defer func() {
 			if err := recover(); err != nil {
 				status2.SetBattleStatus(status2.NotReady)
+				status2.SetTaskType(status2.NONE)
 				time.Sleep(time.Second)
 				reporter.Stop(callbackInterface)
 			}

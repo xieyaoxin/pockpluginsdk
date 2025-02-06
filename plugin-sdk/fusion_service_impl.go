@@ -5,13 +5,84 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
+	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"time"
 )
 
 var FusionServiceImplInstance = &fusionServiceImpl{}
 
 type fusionServiceImpl struct {
+}
+
+func (instance *fusionServiceImpl) Start(FusionChainConfig model.FusionChainConfig, callbackInterface biz_callback.BattleReportCallbackInterface) bool {
+	// 后续加锁
+	if status2.GetConflictTask() {
+		return false
+	}
+	status2.SetTaskType(status2.FUSION)
+	status2.SetBattleStatus(status2.Running)
+	reporter := biz_callback.NewDataReporter()
+	reporter.Start(callbackInterface)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				status2.SetBattleStatus(status2.NotReady)
+				status2.SetTaskType(status2.NONE)
+				time.Sleep(time.Second)
+				reporter.Stop(callbackInterface)
+			}
+		}()
+		err := PetServiceInstance.SaveUnBattlePet()
+		if err != nil {
+			return
+		}
+		for {
+			instance.fusion(FusionChainConfig)
+			reporter.SendData(result)
+			time.Sleep(1 * time.Second)
+		}
+	}()
+	return true
+}
+func (*fusionServiceImpl) fusion(FusionChainConfig model.FusionChainConfig) {
+	MergeCount := 0
+	MergeConfig := model.CopyFusionConfig(FusionChainConfig)
+	// 初始化缓存
+	InitMergeArticleCache()
+	for {
+		GodList := []*model.Pet{}
+
+		petsInFarm, err := PetServiceInstance.GetFarmPets()
+		petsInBody, err := PetServiceInstance.GetCarriedPetList()
+		pets := append(petsInFarm, petsInBody...)
+		if err != nil {
+			return
+		}
+		for _, Pet := range pets {
+			if Pet.Name == "小神龙琅玡" {
+				GodList = append(GodList, Pet)
+			}
+		}
+		GodCount := len(GodList)
+		plugin_log.Info("当前牧场中小神数量 %d", GodCount)
+		if FusionChainConfig.Finish.GodCount > 0 && GodCount >= FusionChainConfig.Finish.GodCount {
+			plugin_log.Info("达到预期数量 %d,合神结束", FusionChainConfig.Finish.GodCount)
+			break
+		}
+		_, err = MergeGod(*MergeConfig)
+		if err != nil {
+			plugin_log.Error("合神失败 原因: %s", err.Error())
+			return
+		}
+		MergeCount = MergeCount + 1
+		plugin_log.Info("当前合成数量 %d", MergeCount)
+		if MergeCount >= FusionChainConfig.Finish.MergeCount {
+			plugin_log.Info("达到预期数量 %d,合神结束", FusionChainConfig.Finish.MergeCount)
+			break
+		}
+	}
 }
 
 // Fusion 合成一次

@@ -24,7 +24,7 @@ func InitParam() map[string]string {
 }
 
 func callServerFormInterface(interfaceName string, params map[string]string) string {
-	if status2.IsBattleParsing() {
+	if status2.IsParsing() {
 		panic("正在停止战斗任务")
 	}
 	payload := url.Values{}
@@ -58,7 +58,7 @@ func callServerFormInterface(interfaceName string, params map[string]string) str
 
 // 调用口袋接口,
 func CallServerGetInterface(interfaceName string, param map[string]string) string {
-	if status2.IsBattleParsing() {
+	if status2.IsParsing() {
 		panic("正在停止战斗任务")
 	}
 	// 设置统一延时 300ms
