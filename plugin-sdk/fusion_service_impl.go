@@ -40,8 +40,8 @@ func (instance *fusionServiceImpl) Start(FusionChainConfig model.FusionChainConf
 		}
 		for {
 			instance.fusion(FusionChainConfig)
-			reporter.SendData(result)
-			time.Sleep(1 * time.Second)
+			//reporter.SendData(result)
+			//time.Sleep(1 * time.Second)
 		}
 	}()
 	return true
