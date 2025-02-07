@@ -3,11 +3,11 @@ package plugin_sdk
 import (
 	"errors"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
-	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"strings"
 	"time"
 )
@@ -20,7 +20,7 @@ type ttServiceImpl struct {
 }
 
 // todo 通天/副本/挂机 互斥
-func (*ttServiceImpl) StartTtLoop(config *model.TtConfig, callbackInterface *biz_callback.TtReportCallbackInterface) bool {
+func (*ttServiceImpl) StartTt(config *model.TtConfig, callbackInterface biz_callback.TtReportCallbackInterface) bool {
 
 	// 后续加锁
 	if status2.GetConflictTask() {
@@ -31,6 +31,7 @@ func (*ttServiceImpl) StartTtLoop(config *model.TtConfig, callbackInterface *biz
 	status2.SetBattleStatus(status2.Running)
 	reporter := biz_callback.NewDataReporter()
 	reporter.Start(callbackInterface)
+
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {

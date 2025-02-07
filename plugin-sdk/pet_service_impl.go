@@ -40,6 +40,7 @@ func (*petService) GetPetDetail(PetId string) (*model.Pet, error) {
 
 // GetPetSkillList 获取宠物技能列表
 func (*petService) GetPetSkillList(PetId string) ([]*model.Skill, error) {
+	// todo 切换获取技能列表的方法
 	return repository.GetPetRepository().GetPetSkillList(PetId)
 }
 

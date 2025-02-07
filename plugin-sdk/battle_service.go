@@ -167,3 +167,49 @@ func InitCatchBmConfig() *model.BattleConfig {
 		CatchHpThreshold:   100,
 	}
 }
+
+func getBattlePet(pets []*model.Pet) *model.Pet {
+	for _, pet := range pets {
+		if pet.IsBattle {
+			return pet
+		}
+	}
+	return nil
+}
+
+func InitBattlePet(PetId, PetName, SkillId, SkillName string) (string, string) {
+	PetServiceInstance.SaveUnBattlePet()
+	// 初始化PetId
+	if PetId == "" {
+		// 获取身上的宠物列表
+		list := PetServiceInstance.GetAllPets()
+		if PetName == "" {
+			battlePet := getBattlePet(list)
+			PetId = battlePet.Id
+		}
+		if PetId == "" {
+			for _, pet := range list {
+				if strings.Contains(pet.Name, PetName) {
+					PetId = pet.Id
+					break
+				}
+			}
+		}
+	}
+
+	// 初始化技能ID
+	if SkillId == "" {
+		SkillList, _ := PetServiceInstance.GetPetSkillList(PetId)
+		for _, Skill := range SkillList {
+			if strings.Contains(Skill.SkillName, SkillName) {
+				SkillId = Skill.SkillId
+				break
+			}
+		}
+		if SkillId == "" {
+			SkillId = "1"
+		}
+	}
+	PetServiceInstance.SetBattlePet(PetId)
+	return PetId, SkillId
+}

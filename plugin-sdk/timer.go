@@ -2,7 +2,6 @@ package plugin_sdk
 
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
-	"time"
 )
 
 var TimerConfig = []*model.TimerConfig{
@@ -29,19 +28,19 @@ var TimerConfig = []*model.TimerConfig{
 }
 
 func init() {
-	ticker := time.NewTicker(1 * time.Minute)
-	defer ticker.Stop()
-	var Times int64
-	// 启动一个 goroutine 来处理定时任务
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				handleTimer(Times)
-				Times++
-			}
-		}
-	}()
+	//ticker := time.NewTicker(1 * time.Minute)
+	//defer ticker.Stop()
+	//var Times int64
+	//// 启动一个 goroutine 来处理定时任务
+	//go func() {
+	//	for {
+	//		select {
+	//		case <-ticker.C:
+	//			handleTimer(Times)
+	//			Times++
+	//		}
+	//	}
+	//}()
 }
 
 func handleTimer(Times int64) {

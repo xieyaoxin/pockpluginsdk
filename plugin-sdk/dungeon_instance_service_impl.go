@@ -6,6 +6,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"time"
 )
 
@@ -16,7 +17,7 @@ var MaxBattleFailedTimes = 5
 type dungeonInstanceServiceImpl struct {
 }
 
-func (*dungeonInstanceServiceImpl) FightDungeon(Config *model.DungeonInstanceConfig) {
+func (*dungeonInstanceServiceImpl) FightDungeon(Config *model.DungeonInstanceConfig, callbackInterface biz_callback.DungeonReportCallbackInterface) {
 
 }
 

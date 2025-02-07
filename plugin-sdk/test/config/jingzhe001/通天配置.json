@@ -1,8 +1,8 @@
 {
   "pet_id": "",
   "pet_name": "辣椒",
-  "skill_id": "",
-  "skill_name": "苍龙破",
+  "skill_id": "799",
+  "skill_name": "",
   "drop_equip": true,
   "drop_zll": true,
   "auto_use_sjk": true,

@@ -12,7 +12,7 @@ const (
 var battleStatus = "NOT_READY"
 
 func IsBattleRunning() bool {
-	return battleStatus == NotReady
+	return battleStatus == Running
 }
 
 func IsParsing() bool {

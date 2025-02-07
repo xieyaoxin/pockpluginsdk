@@ -42,6 +42,28 @@ func GetChainConfig(AccountName string) []string {
 	return config
 }
 
+func GetTtConfig(AccountName string) *chain_model.TtChainConfig {
+	configFile := fmt.Sprintf("config/%s/通天配置.json", AccountName)
+	configString := ReadFromFile(configFile)
+	var config = &chain_model.TtChainConfig{}
+	err := json.Unmarshal(configString, config)
+	if err != nil {
+		panic("获取通天配置失败，账号: " + AccountName)
+	}
+	return config
+}
+
+func GetDungeonInstanceConfig(AccountName string) *chain_model.DungeonChainConfig {
+	configFile := fmt.Sprintf("config/%s/副本配置.json", AccountName)
+	configString := ReadFromFile(configFile)
+	var config = &chain_model.DungeonChainConfig{}
+	err := json.Unmarshal(configString, config)
+	if err != nil {
+		panic("获取副本配置失败，账号: " + AccountName)
+	}
+	return config
+}
+
 func ReadFromFile(fileName string) []byte {
 	f, err := os.Open(fileName)
 	if err != nil {
