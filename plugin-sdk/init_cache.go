@@ -88,7 +88,7 @@ func GetBMFromCache() *model.Pet {
 	}
 	catchBmConfig := InitCatchBmConfig()
 	for {
-		result := FightOneTime(*catchBmConfig)
+		result := BattleServiceImplInstance.FightOneTime(*catchBmConfig)
 		if result == "捕捉成功" {
 			break
 		}

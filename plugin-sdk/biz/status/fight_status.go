@@ -1,46 +1,32 @@
 package status
 
 // FightStatus 挂机任务状态
-var FightStatus = &fightStatus{
-	BattleStatus:   NotReady,
-	FbBattleStatus: NotReady,
-	TtBattleStatus: NotReady,
-}
 
 const (
 	NotReady     = "NOT_READY"
 	Running      = "RUNNING"
+	Parsing      = "PARSING"
 	Waiting2Stop = "WAITING_TO_STOP"
 )
 
-type fightStatus struct {
-	BattleStatus   string
-	FbBattleStatus string
-	TtBattleStatus string
-	FusionStatus   string
-	NirvanaStatus  string
-}
+var battleStatus = "NOT_READY"
 
 func IsBattleRunning() bool {
-	return !(FightStatus.BattleStatus == NotReady && FightStatus.FbBattleStatus == NotReady && FightStatus.TtBattleStatus == NotReady)
+	return battleStatus == NotReady
 }
 
 func IsParsing() bool {
-	return FightStatus.BattleStatus == Waiting2Stop || FightStatus.FbBattleStatus == Waiting2Stop || FightStatus.TtBattleStatus == Waiting2Stop || FightStatus.FusionStatus == Waiting2Stop || FightStatus.NirvanaStatus == Waiting2Stop
+	return battleStatus == Waiting2Stop
 }
 
 func IsBattleNotReady() bool {
-	return FightStatus.BattleStatus == NotReady && FightStatus.FbBattleStatus == NotReady && FightStatus.TtBattleStatus == NotReady
+	return battleStatus == NotReady
 }
 
 func SetBattleStatus(status string) {
-	FightStatus.BattleStatus = status
+	battleStatus = status
 }
 
-func SetTtBattleStatus(status string) {
-	FightStatus.TtBattleStatus = status
-}
-
-func SetFbBattleStatus(status string) {
-	FightStatus.FbBattleStatus = status
+func GetBattleStatus() string {
+	return battleStatus
 }

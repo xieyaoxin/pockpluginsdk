@@ -1,7 +1,7 @@
 package plugin_sdk
 
 import (
-	model2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
@@ -11,18 +11,13 @@ import (
 	"time"
 )
 
-var impl = repository.GetBattleRepository()
-var BattleServiceImpl = &battleService{}
-
-func initFightCache() {
-	// todo 后续增加缓存
-	// 初始化捕捉球缓存
-}
+var battleRepository = repository.GetBattleRepository()
+var BattleServiceImplInstance = &battleService{}
 
 type battleService struct {
 }
 
-func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackInterface biz_callback.BattleReportCallbackInterface) bool {
+func (inst *battleService) FightByConfig(BattleConfig model.BattleConfig, callbackInterface biz_callback.BattleReportCallbackInterface) bool {
 	// 后续加锁
 	if status2.GetConflictTask() {
 		return false
@@ -45,7 +40,7 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 			return
 		}
 		for {
-			result := FightOneTime(BattleConfig)
+			result := inst.FightOneTime(BattleConfig)
 			reporter.SendData(result)
 			time.Sleep(1 * time.Second)
 		}
@@ -55,9 +50,9 @@ func (instance *battleService) Fight(BattleConfig model2.BattleConfig, callbackI
 
 // FightOneTime 普通地图 根据配置捕捉或击杀 - 完成一次进入地图的战斗
 // 进入地图失败时 返回false
-func FightOneTime(BattleConfig model2.BattleConfig) string {
+func (inst *battleService) FightOneTime(BattleConfig model.BattleConfig) string {
 
-	monster, err := impl.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
+	monster, err := battleRepository.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
 	if err != nil {
 		plugin_log.Error("进入地图失败")
 		return "进入地图异常"
@@ -74,7 +69,7 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 			if BattleConfig.RunWhenNotCatch {
 				plugin_log.Info("当前怪物不在捕捉列表中,跳过")
 			} else {
-				fight(BattleConfig, monster)
+				inst.Fight(BattleConfig, monster)
 			}
 			return "不在捕捉范围内"
 		case "01":
@@ -82,7 +77,7 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 				plugin_log.Info("捕捉失败,跳过本次战斗")
 				return "捕捉失败"
 			} else {
-				fight(BattleConfig, monster)
+				inst.Fight(BattleConfig, monster)
 				return "战斗结束"
 			}
 		}
@@ -90,9 +85,9 @@ func FightOneTime(BattleConfig model2.BattleConfig) string {
 	}
 }
 
-func fight(BattleConfig model2.BattleConfig, monster *model2.Monster) bool {
+func (inst *battleService) Fight(BattleConfig model.BattleConfig, monster *model.Monster) bool {
 	for {
-		result := impl.FightOnce(BattleConfig.SkillId, monster)
+		result := battleRepository.FightOnce(BattleConfig.SkillId, monster)
 		if result == "10" {
 			time.Sleep(time.Duration(2000) * time.Millisecond)
 		} else {
@@ -102,7 +97,7 @@ func fight(BattleConfig model2.BattleConfig, monster *model2.Monster) bool {
 }
 
 // catchPet: 00: 不在捕捉范围内  01: 捕捉失败 11: 捕捉成功; 10: 战斗失败 / 战斗成功
-func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string {
+func catchPet(BattleConfig model.BattleConfig, monster *model.Monster) string {
 	NeedCatch := false
 	for _, CatchMonsterName := range BattleConfig.CatchPets {
 		if strings.Contains(monster.Name, CatchMonsterName) {
@@ -114,7 +109,7 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 		return "00"
 	}
 	for monster.CurrentHpRate > BattleConfig.CatchHpThreshold {
-		result := impl.FightOnce(BattleConfig.SkillId, monster)
+		result := battleRepository.FightOnce(BattleConfig.SkillId, monster)
 		// 战斗成功 / 战斗失败 -> 返回捕捉失败
 		if result == "00" || result == "11" {
 			return "10"
@@ -128,7 +123,7 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 	if len(BallList) > 0 {
 		BallId := BallList[0].ID
 		plugin_log.Info("开始捕捉 %s, 使用 %s 球", monster.Name, BallList[0].Name)
-		result := impl.CatchPet(monster, BallId)
+		result := battleRepository.CatchPet(monster, BallId)
 		if result {
 			if BattleConfig.SaveAfterCatch {
 				err := PetServiceInstance.SaveUnBattlePet()
@@ -147,7 +142,7 @@ func catchPet(BattleConfig model2.BattleConfig, monster *model2.Monster) string 
 	}
 }
 
-func getBallNameListByMonsterName(monsterName string, balls []string) []*model2.Article {
+func getBallNameListByMonsterName(monsterName string, balls []string) []*model.Article {
 	// 部分
 	BallNameList := plugin_sdk_const.GetBallByMonster(monsterName, balls)
 	ballList, _ := ArticleServiceInstance.QueryArticleListByNameLists(BallNameList)
@@ -156,17 +151,17 @@ func getBallNameListByMonsterName(monsterName string, balls []string) []*model2.
 }
 
 // InitCatchBmConfig 提供一个抓BM的配置
-func InitCatchBmConfig() *model2.BattleConfig {
+func InitCatchBmConfig() *model.BattleConfig {
 	Pet := PetServiceInstance.GetBattlePet()
-	return &model2.BattleConfig{
+	return &model.BattleConfig{
 		PetId:              Pet.Id,
 		SkillId:            "1",
 		MapId:              "1",
 		Difficulty:         "1",
 		SkipMonsters:       []string{},
 		CatchPets:          []string{"波姆"},
-		RunWhenCatchFailed: false,
-		RunWhenNotCatch:    false,
+		RunWhenCatchFailed: true,
+		RunWhenNotCatch:    true,
 		Balls:              []string{},
 		Rubbish:            []string{},
 		CatchHpThreshold:   100,

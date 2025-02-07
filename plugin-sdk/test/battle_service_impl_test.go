@@ -49,7 +49,7 @@ func TestFightOneTime(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := plugin_sdk.FightOneTime(tt.args.BattleConfig); got != tt.want {
+			if got := plugin_sdk.BattleServiceImplInstance.FightOneTime(tt.args.BattleConfig); got != tt.want {
 				t.Errorf("FightOneTime() = %v, want %v", got, tt.want)
 			}
 		})
@@ -90,14 +90,14 @@ func TestFight(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			plugin_sdk.BattleServiceImpl.Fight(tt.args.BattleConfig, nil)
+			plugin_sdk.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
 		})
 	}
 	plugin_log.Info("当前战斗状态: %v", status.IsBattleRunning())
 	time.Sleep(time.Duration(30000000) * time.Second)
 	status.SetBattleStatus(status.Waiting2Stop)
-	plugin_log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
+	plugin_log.Info("当前战斗状态: %v", status.GetBattleStatus())
 	time.Sleep(time.Duration(20) * time.Second)
-	plugin_log.Info("当前战斗状态: %v", status.FightStatus.BattleStatus)
+	plugin_log.Info("当前战斗状态: %v", status.GetBattleStatus())
 
 }
