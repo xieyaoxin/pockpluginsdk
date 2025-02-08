@@ -58,6 +58,7 @@ func HoldOn() {
 	ch := make(chan struct{})
 	// 使用select语句阻塞主协程
 	select {
-	case <-ch:
+	case c := <-ch:
+		plugin_log.Info("c is %v", c)
 	}
 }

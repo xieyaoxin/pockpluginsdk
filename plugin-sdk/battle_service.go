@@ -108,13 +108,13 @@ func catchPet(BattleConfig model.BattleConfig, monster *model.Monster) string {
 	if !NeedCatch {
 		return "00"
 	}
-	for monster.CurrentHpRate > BattleConfig.CatchHpThreshold {
+	for int(monster.CurrentHpRate) > BattleConfig.CatchHpThreshold {
 		result := battleRepository.FightOnce(BattleConfig.SkillId, monster)
 		// 战斗成功 / 战斗失败 -> 返回捕捉失败
 		if result == "00" || result == "11" {
 			return "10"
 		}
-		if monster.CurrentHpRate >= BattleConfig.CatchHpThreshold {
+		if int(monster.CurrentHpRate) >= BattleConfig.CatchHpThreshold {
 			break
 		}
 		time.Sleep(time.Duration(2000) * time.Millisecond)

@@ -24,3 +24,7 @@ var currentTask = NONE
 func SetTaskType(TaskType int) {
 	currentTask = TaskType
 }
+
+func GetCurrentTaskType() int {
+	return currentTask
+}

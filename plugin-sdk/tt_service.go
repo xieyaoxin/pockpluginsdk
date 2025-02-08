@@ -20,7 +20,7 @@ type ttServiceImpl struct {
 }
 
 // todo 通天/副本/挂机 互斥
-func (*ttServiceImpl) StartTt(config *model.TtConfig, callbackInterface biz_callback.TtReportCallbackInterface) bool {
+func (inst *ttServiceImpl) StartTt(config *model.TtConfig, callbackInterface biz_callback.TtReportCallbackInterface) bool {
 
 	// 后续加锁
 	if status2.GetConflictTask() {
@@ -35,9 +35,24 @@ func (*ttServiceImpl) StartTt(config *model.TtConfig, callbackInterface biz_call
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
-				status2.SetBattleStatus(status2.NotReady)
-				time.Sleep(time.Second)
-				reporter.Stop(callbackInterface)
+				status := status2.GetBattleStatus()
+				switch status {
+				case status2.Waiting2Stop:
+					status2.SetBattleStatus(status2.NotReady)
+					time.Sleep(time.Second)
+					reporter.Stop(callbackInterface)
+					break
+				case status2.Parsing:
+					model.DungeonChannel <- status2.Running
+					result := <-model.FightChannel
+					plugin_log.Info("暂停结束 %s 继续战斗", result)
+					status2.SetBattleStatus(status2.NotReady)
+					inst.StartTt(config, callbackInterface)
+					break
+				default:
+					break
+				}
+
 			}
 		}()
 		err := PetServiceInstance.SaveUnBattlePet()

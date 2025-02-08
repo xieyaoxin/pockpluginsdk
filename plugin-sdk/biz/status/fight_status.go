@@ -16,7 +16,7 @@ func IsBattleRunning() bool {
 }
 
 func IsParsing() bool {
-	return battleStatus == Waiting2Stop
+	return battleStatus == Waiting2Stop || battleStatus == Parsing
 }
 
 func IsBattleNotReady() bool {

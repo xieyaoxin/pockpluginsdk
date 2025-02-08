@@ -89,6 +89,22 @@ func (*dungeonInstanceServiceImpl) FightDungeonOnce(Config *model.DungeonInstanc
 	}
 }
 
+func (*dungeonInstanceServiceImpl) GetDungeonStatus(MapId string) (bool, error) {
+	// 校验副本状态
+	CurrentStage, CountDown := repositoryInstance.GetDungeonInstanceStatus(MapId)
+	plugin_log.Info("当前副本进度: %d, 当前副本倒计时 %d ", CurrentStage, CountDown)
+	if CurrentStage == -1 || CountDown == -1 {
+		return false, errors.New(plugin_sdk_const.GET_DUNGEON_INSTANCE_STATUS_FAILED)
+	}
+	if CountDown > 0 && CurrentStage == 1 {
+		plugin_log.Info("副本未开启")
+		// 倒计时大于0 当前关卡等于1 -> 副本已结束
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
 func openDungeonInstance(Config *model.DungeonInstanceFightConfig) error {
 	_, err := repositoryInstance.SpendSj(Config.MapId)
 	if err != nil {

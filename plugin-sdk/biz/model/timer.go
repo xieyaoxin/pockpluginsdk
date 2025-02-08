@@ -1,12 +1,18 @@
 package model
 
+var DungeonChannel = make(chan string)
+var FightChannel = make(chan string)
+
 type TimerConfig struct {
-	Enable                bool                       `json:"enable"`
-	TimeTaskType          string                     `json:"type"`
-	Schedule              int                        `json:"schedule"`
-	Config                interface{}                `json:"config"`
-	DropArticleConfig     DropArticleTimerConfig     `json:"drop_article_config"`
-	DungeonInstanceConfig DungeonInstanceFightConfig `json:"dungeon_instance_config"`
+	Enable       bool        `json:"enable"`
+	TimeTaskType string      `json:"type"`
+	Schedule     int64       `json:"schedule"`
+	Config       interface{} `json:"config"`
+	Handle       TimerHandleInterface
+}
+
+type TimerHandleInterface interface {
+	HandleTimer(interface{})
 }
 
 type DropArticleTimerConfig struct {
@@ -14,6 +20,10 @@ type DropArticleTimerConfig struct {
 	DropArticleBlackList []string `json:"drop_article_black_list"`
 }
 
-type TimerHandleInterface interface {
-	HandleTimer(TimerConfig)
+type DungeonInstanceTimerConfig struct {
+	PetId     string   `json:"pet_id"`
+	PetName   string   `json:"pet_name"`
+	SkillId   string   `json:"skill_id"`
+	SkillName string   `json:"skill_name"`
+	MapList   []string `json:"map_list"`
 }

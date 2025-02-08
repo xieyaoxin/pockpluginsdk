@@ -3,11 +3,11 @@ package model
 type Monster struct {
 	*PockBaseModel
 	Name          string
-	TotalHp       int
-	CurrentHp     int
+	TotalHp       int64
+	CurrentHp     int64
 	NatureType    string
 	SkillId       string
-	CurrentHpRate int
+	CurrentHpRate int64
 	Level         int
 }
 

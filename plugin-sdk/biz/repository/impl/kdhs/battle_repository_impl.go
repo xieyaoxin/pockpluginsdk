@@ -60,7 +60,7 @@ func (battleRepositoryImpl) FightOnce(SkillId string, monster *model.Monster) st
 	if err != nil {
 		plugin_log.Info("解析怪物血量错误 原始信息:%s", result)
 	}
-	monster.CurrentHp = leftHp
+	monster.CurrentHp = int64(leftHp)
 	monster.CalculateCurrentHpRate()
 	plugin_log.Info("当前怪物：%s. 剩余血量 %d, 百分比 %d  %%%%", monster.Name, monster.CurrentHp, monster.CurrentHpRate)
 	// 判断
@@ -148,6 +148,6 @@ func enterMap(petId string) (*model.Monster, error) {
 		return &model.Monster{}, errors.New(result)
 	}
 	return &model.Monster{Name: monsterPropertyArray[0].(string), Level: int(monsterPropertyArray[1].(float64)),
-		NatureType: monsterPropertyArray[2].(string), TotalHp: int(monsterPropertyArray[5].(float64)), CurrentHp: int(monsterPropertyArray[5].(float64)),
+		NatureType: monsterPropertyArray[2].(string), TotalHp: int64(monsterPropertyArray[5].(float64)), CurrentHp: int64(monsterPropertyArray[5].(float64)),
 		CurrentHpRate: 100, SkillId: strconv.Itoa(int(monsterPropertyArray[11].(float64)))}, nil
 }

@@ -46,7 +46,7 @@ func (battleRepositoryImpl) FightOnce(SkillId string, monster *model.Monster) st
 	if err != nil {
 		plugin_log.Info("解析怪物血量错误 原始信息:%s", result)
 	}
-	monster.CurrentHp = leftHp
+	monster.CurrentHp = int64(leftHp)
 	monster.CalculateCurrentHpRate()
 	// 判断
 	if strings.Contains(resultArray[2], "受到了严重伤害，已经不能战斗") {
