@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/chain/chain_model"
 	"io"
@@ -60,6 +61,17 @@ func GetDungeonInstanceConfig(AccountName string) *chain_model.DungeonChainConfi
 	err := json.Unmarshal(configString, config)
 	if err != nil {
 		panic("获取副本配置失败，账号: " + AccountName)
+	}
+	return config
+}
+
+func GetDefaultTimerConfig(AccountName string) []*model.TimerConfig {
+	configFile := fmt.Sprintf("config/%s/定时配置.json", AccountName)
+	configString := ReadFromFile(configFile)
+	var config = []*model.TimerConfig{}
+	err := json.Unmarshal(configString, config)
+	if err != nil {
+		panic("获取定时任务配置失败，账号: " + AccountName)
 	}
 	return config
 }
