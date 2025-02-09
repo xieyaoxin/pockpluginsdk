@@ -69,7 +69,7 @@ func GetDefaultTimerConfig(AccountName string) []*model.TimerConfig {
 	configFile := fmt.Sprintf("config/%s/定时配置.json", AccountName)
 	configString := ReadFromFile(configFile)
 	var config = []*model.TimerConfig{}
-	err := json.Unmarshal(configString, config)
+	err := json.Unmarshal(configString, &config)
 	if err != nil {
 		panic("获取定时任务配置失败，账号: " + AccountName)
 	}
