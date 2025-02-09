@@ -87,6 +87,14 @@ func UpdateTimer(config model.TimerConfig) error {
 		OriginConfig.Handle = config.Handle
 	} else {
 		plugin_log.Error("无法找到定时任务  %s", config.TimeTaskType)
+		Config := &model.TimerConfig{
+			Enable:       config.Enable,
+			TimeTaskType: config.TimeTaskType,
+			Schedule:     config.Schedule,
+			Config:       config.Config,
+			Handle:       config.Handle,
+		}
+		TimerConfigMap[Config.TimeTaskType] = Config
 		return errors.New("无法找到定时任务  " + config.TimeTaskType)
 	}
 	return nil
