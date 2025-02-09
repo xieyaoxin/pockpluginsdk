@@ -1,4 +1,4 @@
-package plugin_sdk
+package timer
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/chain/config"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/timer"
 	"time"
 )
 
@@ -29,8 +28,8 @@ var TimerHandlerMap = make(map[string]model.TimerHandleInterface)
 //}
 
 func init() {
-	TimerHandlerMap["自动清理物品"] = &timer.DropArticleTimerHandler{}
-	TimerHandlerMap["自动副本"] = &timer.DungeonInstanceTimerHandler{}
+	TimerHandlerMap["自动清理物品"] = &DropArticleTimerHandler{}
+	TimerHandlerMap["自动副本"] = &DungeonInstanceTimerHandler{}
 
 	go func() {
 		ticker := time.NewTicker(1 * time.Minute)

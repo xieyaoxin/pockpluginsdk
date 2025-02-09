@@ -1,7 +1,6 @@
 package test
 
 import (
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	chains "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/chain"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/timer"
@@ -15,7 +14,7 @@ func TestTtFight(t *testing.T) {
 	GetLoginUser()
 	chains.TtChain()
 
-	plugin_sdk.UpdateTimer(model.TimerConfig{
+	timer.UpdateTimer(model.TimerConfig{
 		Enable:       true,
 		Schedule:     10,
 		TimeTaskType: "自动清理物品",
@@ -28,7 +27,7 @@ func TestTtFight(t *testing.T) {
 		Handle: &timer.DropArticleTimerHandler{},
 	})
 
-	plugin_sdk.UpdateTimer(model.TimerConfig{
+	timer.UpdateTimer(model.TimerConfig{
 		Enable:       true,
 		Schedule:     30,
 		TimeTaskType: "自动副本",
