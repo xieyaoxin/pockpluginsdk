@@ -8,4 +8,5 @@ type ArticleRepository interface {
 	UseArticle(articleId string) error
 	GetArticles(name string) ([]*model.Article, error)
 	GetArticleDetail(articleId string) model.Article
+	SellArticle(articleId string, sellNumber int) bool
 }

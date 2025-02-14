@@ -101,3 +101,51 @@ func TestFight(t *testing.T) {
 	plugin_log.Info("当前战斗状态: %v", status.GetBattleStatus())
 
 }
+
+func TestFightXDL(t *testing.T) {
+	GetLoginUser()
+
+	pets, _ := plugin_sdk.PetServiceInstance.GetCarriedPetList()
+	pet := pets[0]
+	type args struct {
+		BattleConfig model.BattleConfig
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			args: args{
+				BattleConfig: model.BattleConfig{
+					PetId:              pet.Id,
+					SkillId:            "743",
+					MapId:              "100",
+					Difficulty:         "3",
+					SkipMonsters:       []string{},
+					CatchPets:          []string{},
+					RunWhenCatchFailed: false,
+					RunWhenNotCatch:    false,
+					Balls:              []string{},
+					Rubbish:            []string{},
+					CatchHpThreshold:   100,
+					SaveAfterCatch:     true,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			plugin_sdk.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
+			//	195545
+			//	275645
+		})
+	}
+	plugin_log.Info("当前战斗状态: %v", status.IsBattleRunning())
+	time.Sleep(time.Duration(30000000) * time.Second)
+	status.SetBattleStatus(status.Waiting2Stop)
+	plugin_log.Info("当前战斗状态: %v", status.GetBattleStatus())
+	time.Sleep(time.Duration(20) * time.Second)
+	plugin_log.Info("当前战斗状态: %v", status.GetBattleStatus())
+
+}

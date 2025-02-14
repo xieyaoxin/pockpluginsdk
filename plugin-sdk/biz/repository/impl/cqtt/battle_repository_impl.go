@@ -15,7 +15,7 @@ var BattleRepositoryImplInstance = &battleRepositoryImpl{}
 
 type battleRepositoryImpl struct{}
 
-func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*model.Monster, error) {
+func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string, difficulty string) (*model.Monster, error) {
 	params := util.InitParam()
 	params["n"] = mapId
 	CallServerGetInterface("function/Team_Mod.php", params)
@@ -133,6 +133,6 @@ func enterMap(petId string) (*model.Monster, error) {
 		return &model.Monster{}, errors.New(result)
 	}
 	return &model.Monster{Name: monsterPropertyArray[0].(string), Level: int(monsterPropertyArray[1].(float64)),
-		NatureType: monsterPropertyArray[2].(string), TotalHp: int(monsterPropertyArray[5].(float64)), CurrentHp: int(monsterPropertyArray[5].(float64)),
+		NatureType: monsterPropertyArray[2].(string), TotalHp: int64(monsterPropertyArray[5].(float64)), CurrentHp: int64(monsterPropertyArray[5].(float64)),
 		CurrentHpRate: 100, SkillId: strconv.Itoa(int(monsterPropertyArray[11].(float64)))}, nil
 }

@@ -19,7 +19,7 @@ func (battleRepositoryImpl) EnterMap(petId string) (*model.Monster, error) {
 	return enterMap(petId)
 }
 
-func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*model.Monster, error) {
+func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string, difficulty string) (*model.Monster, error) {
 	params := util.InitParam()
 	CallServerGetInterface("function/Pets_Mod.php", params)
 
@@ -29,6 +29,9 @@ func (battleRepositoryImpl) SelectAndEnterMap(mapId string, petId string) (*mode
 
 	params["p"] = petId
 	params["mapid"] = mapId
+	if difficulty != "" {
+		params["type"] = difficulty
+	}
 	CallServerGetInterface("function/manymapgate.php", params)
 
 	//result1 = CallServerGetInterface("function/Team_Mod.php", params)

@@ -57,6 +57,15 @@ func (*articleService) UseSjk() error {
 	return nil
 }
 
+func (s *articleService) DropArticle(id string, count int) {
+	///function/sellBag.php?bid=3734264&n=1
+	DropCount := count
+	if count > 100 {
+		DropCount = 100
+	}
+	repository.GetArticleRepository().SellArticle(id, DropCount)
+}
+
 func getArticleByName(articleName string, articleList []*model.Article) *model.Article {
 	for _, article := range articleList {
 		if article.Name == articleName {

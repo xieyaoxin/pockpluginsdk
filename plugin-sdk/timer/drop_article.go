@@ -40,6 +40,7 @@ func (*DropArticleTimerHandler) HandleTimer(OriginConfig interface{}) {
 			BlackFlag := util.SlicesLikeString(Config.DropArticleBlackList, Article.Name)
 			if !BlackFlag {
 				plugin_log.Info("丢弃物品: %s,物品Id: %s,物品数量: %d", Article.Name, Article.ID, Article.ArticleCount)
+				plugin_sdk.ArticleServiceInstance.DropArticle(Article.ID, Article.ArticleCount)
 			}
 		}
 	}

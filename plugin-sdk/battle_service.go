@@ -52,7 +52,7 @@ func (inst *battleService) FightByConfig(BattleConfig model.BattleConfig, callba
 // 进入地图失败时 返回false
 func (inst *battleService) FightOneTime(BattleConfig model.BattleConfig) string {
 
-	monster, err := battleRepository.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId)
+	monster, err := battleRepository.SelectAndEnterMap(BattleConfig.MapId, BattleConfig.PetId, BattleConfig.Difficulty)
 	if err != nil {
 		plugin_log.Error("进入地图失败")
 		return "进入地图异常"

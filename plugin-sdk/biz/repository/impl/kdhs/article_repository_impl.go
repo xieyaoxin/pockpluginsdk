@@ -69,3 +69,12 @@ func (*articleRepositoryImpl4KDHS) GetArticleDetail(articleId string) model.Arti
 	article.Sellable = !strings.Contains(result, "不可交易")
 	return article
 }
+
+func (*articleRepositoryImpl4KDHS) SellArticle(articleId string, number int) bool {
+	params := util.InitParam()
+	//	http://43.248.129.148:567/function/sellBag.php?bid=3686382&n=200
+	params["bid"] = articleId
+	params["n"] = strconv.Itoa(number)
+	result := CallServerGetInterface("/function/sellBag.php", params)
+	return result == "0"
+}
