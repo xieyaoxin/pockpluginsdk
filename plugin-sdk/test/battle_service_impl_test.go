@@ -1,6 +1,7 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
@@ -136,7 +137,13 @@ func TestFightXDL(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+
 			plugin_sdk.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
+			marshal, err := json.Marshal(tt.args.BattleConfig)
+			if err != nil {
+				return
+			}
+			plugin_log.Info(string(marshal))
 			//	195545
 			//	275645
 		})

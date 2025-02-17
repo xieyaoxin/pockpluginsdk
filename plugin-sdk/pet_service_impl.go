@@ -62,8 +62,22 @@ func (inst *petService) SetBattlePet(PetId string) error {
 	return err
 }
 
-func (*petService) SaveUnBattlePet() error {
-	list, _ := PetServiceInstance.GetCarriedPetList()
+func (inst *petService) SaveUnBattlePet() error {
+	list, _ := inst.GetCarriedPetList()
+	hasBattle := false
+	for _, Pet := range list {
+		if Pet.IsBattle {
+			hasBattle = true
+			break
+		}
+	}
+	if !hasBattle {
+		err := inst.SetBattlePet(list[0].Id)
+		if err != nil {
+			return err
+		}
+		list, _ = inst.GetCarriedPetList()
+	}
 	for _, pet := range list {
 		if !pet.IsBattle {
 			err := repository.GetPetRepository().SavePet(pet.Id)
