@@ -16,6 +16,5 @@ func TestQueryArticleList(t *testing.T) {
 	}
 	for _, article := range articleList {
 		plugin_log.Info("获取物品列表 %v", article)
-
 	}
 }

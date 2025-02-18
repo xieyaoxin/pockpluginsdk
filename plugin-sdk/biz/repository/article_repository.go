@@ -6,6 +6,7 @@ import (
 
 type ArticleRepository interface {
 	UseArticle(articleId string) error
+	BatchUseArticle(articleId string, ArticleCount int) error
 	GetArticles(name string) ([]*model.Article, error)
 	GetArticleDetail(articleId string) model.Article
 	SellArticle(articleId string, sellNumber int) bool

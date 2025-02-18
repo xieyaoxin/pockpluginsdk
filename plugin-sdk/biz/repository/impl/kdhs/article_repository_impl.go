@@ -98,3 +98,15 @@ func (*articleRepositoryImpl4KDHS) GetFromRepository(articleId string, number in
 	result := CallServerGetInterface("function/baseGate.php", params)
 	return result == "0"
 }
+
+//BatchUseArticle(articleId string, ArticleCount int) error
+
+func (*articleRepositoryImpl4KDHS) BatchUseArticle(articleId string, ArticleCount int) error {
+	//	?id=3695531&bacth_num=1
+	params := util.InitParam()
+	params["id"] = articleId
+	params["bacth_num"] = strconv.Itoa(ArticleCount)
+	result := CallServerGetInterface("function/usedProps.php", params)
+	plugin_log.Info(result)
+	return nil
+}
