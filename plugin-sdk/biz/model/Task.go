@@ -1,10 +1,13 @@
 package model
 
 type Task struct {
-	Account    string
-	Token      string
-	TaskType   string
-	TaskStatus string
-	TaskResult string
-	TaskConfig string
+	TaskName   string
+	TaskId     string
+	TaskDetail string
+	TaskTypeN  string
+}
+
+type TaskType struct {
+	TaskTypeId   string
+	TaskTypeName string
 }

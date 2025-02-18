@@ -30,6 +30,7 @@ var TimerHandlerMap = make(map[string]model.TimerHandleInterface)
 func init() {
 	TimerHandlerMap["自动清理物品"] = &DropArticleTimerHandler{}
 	TimerHandlerMap["自动副本"] = &DungeonInstanceTimerHandler{}
+	TimerHandlerMap["自动任务"] = &AutoTaskTimerHandler{}
 
 	go func() {
 		ticker := time.NewTicker(1 * time.Minute)

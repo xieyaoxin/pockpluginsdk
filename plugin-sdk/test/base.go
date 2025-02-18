@@ -15,6 +15,7 @@ import (
 func init() {
 	// 初始化区服
 	status.SERVER_NAME = status.KDHS
+	GetLoginUser()
 }
 
 func GetLoginUser() model.User {

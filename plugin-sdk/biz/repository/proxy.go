@@ -80,3 +80,12 @@ func GetDungeonInstanceRepository() DungeonInstanceRepository {
 		return nil
 	}
 }
+
+func GetTaskRepository() TaskRepository {
+	switch status.SERVER_NAME {
+	case status.KDHS:
+		return kdhs.TaskRepositoryKdhsImplInstance
+	default:
+		return nil
+	}
+}

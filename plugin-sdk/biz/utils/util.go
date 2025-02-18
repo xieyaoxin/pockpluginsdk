@@ -8,6 +8,7 @@ import (
 	"fmt"
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -106,4 +107,12 @@ func CalculateTime(startTime time.Time) (time.Duration, time.Duration) {
 	minute := delta / time.Minute
 	sec := (delta - minute*time.Minute) / time.Second
 	return minute, sec
+}
+
+func ReplaceAllString(Input string, Target string, origins ...string) string {
+	Output := Input
+	for _, origin := range origins {
+		Output = strings.ReplaceAll(Output, origin, Target)
+	}
+	return Output
 }

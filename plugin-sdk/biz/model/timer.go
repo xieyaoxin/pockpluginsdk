@@ -27,3 +27,6 @@ type DungeonInstanceTimerConfig struct {
 	SkillName string   `json:"skill_name"`
 	MapList   []string `json:"map_list"`
 }
+
+type AutoTaskTimerConfig struct {
+}
