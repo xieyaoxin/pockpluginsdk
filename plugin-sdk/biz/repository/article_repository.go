@@ -9,4 +9,6 @@ type ArticleRepository interface {
 	GetArticles(name string) ([]*model.Article, error)
 	GetArticleDetail(articleId string) model.Article
 	SellArticle(articleId string, sellNumber int) bool
+	Save2Repository(articleId string, sellNumber int) bool
+	GetFromRepository(articleId string, sellNumber int) bool
 }

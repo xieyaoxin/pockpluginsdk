@@ -78,3 +78,23 @@ func (*articleRepositoryImpl4KDHS) SellArticle(articleId string, number int) boo
 	result := CallServerGetInterface("/function/sellBag.php", params)
 	return result == "0"
 }
+
+func (*articleRepositoryImpl4KDHS) Save2Repository(articleId string, number int) bool {
+	params := util.InitParam()
+	//	http://43.248.129.148:567/function/sellBag.php?bid=3686382&n=200
+	params["bid"] = articleId
+	params["n"] = strconv.Itoa(number)
+	params["op"] = "s"
+	result := CallServerGetInterface("function/baseGate.php", params)
+	return result == "0"
+}
+
+func (*articleRepositoryImpl4KDHS) GetFromRepository(articleId string, number int) bool {
+	params := util.InitParam()
+	//	http://43.248.129.148:567/function/sellBag.php?bid=3686382&n=200
+	params["bid"] = articleId
+	params["n"] = strconv.Itoa(number)
+	params["op"] = "g"
+	result := CallServerGetInterface("function/baseGate.php", params)
+	return result == "0"
+}

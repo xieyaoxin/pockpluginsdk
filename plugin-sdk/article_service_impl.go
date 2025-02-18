@@ -74,3 +74,7 @@ func getArticleByName(articleName string, articleList []*model.Article) *model.A
 	}
 	return nil
 }
+
+func Save2Repository(articleName string, saveCount int) bool {
+	return repository.GetArticleRepository().Save2Repository(articleName, saveCount)
+}
