@@ -24,6 +24,7 @@ func (*DungeonInstanceTimerHandler) HandleTimer(OriginConfig interface{}) {
 		return
 	}
 	OriginBattleStatus := status.GetBattleStatus()
+
 	Config, err := Convert2DungeonInstanceFightConfig(OriginConfig)
 	dungeonInstanceMapList := Config.MapList
 	if dungeonInstanceMapList == nil || len(dungeonInstanceMapList) == 0 {
@@ -50,30 +51,18 @@ func (*DungeonInstanceTimerHandler) HandleTimer(OriginConfig interface{}) {
 	if OriginBattleStatus == status.Running {
 		// 暂停战斗
 		status.SetBattleStatus(status.Parsing)
+	} else if OriginBattleStatus == status.NotReady {
+		DungeonStatus = status.Running
+		loopDungeon(Config, dungeonInstanceMapList)
+		DungeonStatus = status.NotReady
 	}
+
 	//
 	select {
 	case <-model.DungeonChannel:
 		status.SetBattleStatus(OriginBattleStatus)
 		DungeonStatus = status.Running
-		PetId, SkillId := plugin_sdk.InitBattlePet(Config.PetId, Config.PetName, Config.SkillId, Config.SkillName)
-		if PetId == "" || SkillId == "" {
-			logrus.Info("未配置挂机宠物和技能")
-			return
-		}
-		for _, MapId := range dungeonInstanceMapList {
-			DungeonConfig := &model.DungeonInstanceFightConfig{
-				PetId:      PetId,
-				SkillId:    SkillId,
-				MapId:      MapId,
-				ForceFight: false,
-				UseSj:      false,
-			}
-			err2 := plugin_sdk.DungeonInstanceServiceImplInstance.FightDungeonOnce(DungeonConfig)
-			if err2 != nil {
-				continue
-			}
-		}
+		loopDungeon(Config, dungeonInstanceMapList)
 		model.FightChannel <- OriginBattleStatus
 		DungeonStatus = status.NotReady
 		break
@@ -117,4 +106,25 @@ func Convert2DungeonInstanceFightConfig(OriginConfig interface{}) (*model.Dungeo
 		return nil, err
 	}
 	return Config, nil
+}
+
+func loopDungeon(Config *model.DungeonInstanceTimerConfig, dungeonInstanceMapList []string) {
+	PetId, SkillId := plugin_sdk.InitBattlePet(Config.PetId, Config.PetName, Config.SkillId, Config.SkillName)
+	if PetId == "" || SkillId == "" {
+		logrus.Info("未配置挂机宠物和技能")
+		return
+	}
+	for _, MapId := range dungeonInstanceMapList {
+		DungeonConfig := &model.DungeonInstanceFightConfig{
+			PetId:      PetId,
+			SkillId:    SkillId,
+			MapId:      MapId,
+			ForceFight: false,
+			UseSj:      false,
+		}
+		err2 := plugin_sdk.DungeonInstanceServiceImplInstance.FightDungeonOnce(DungeonConfig)
+		if err2 != nil {
+			continue
+		}
+	}
 }
