@@ -55,6 +55,7 @@ func (*DungeonInstanceTimerHandler) HandleTimer(OriginConfig interface{}) {
 		DungeonStatus = status.Running
 		loopDungeon(Config, dungeonInstanceMapList)
 		DungeonStatus = status.NotReady
+		return
 	}
 
 	//
