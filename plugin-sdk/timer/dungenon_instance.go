@@ -51,7 +51,7 @@ func (*DungeonInstanceTimerHandler) HandleTimer(OriginConfig interface{}) {
 	if OriginBattleStatus == status.Running {
 		// 暂停战斗
 		status.SetBattleStatus(status.Parsing)
-	} else if OriginBattleStatus == status.NotReady {
+	} else if OriginBattleStatus == status.NotReady && DungeonStatus == status.NotReady {
 		DungeonStatus = status.Running
 		loopDungeon(Config, dungeonInstanceMapList)
 		DungeonStatus = status.NotReady
