@@ -14,40 +14,40 @@ var FusionRepositorykdhsImplInstance = &fusionRepositoryKdhsImpl{}
 
 // 经验类型
 
-var experienceTypeDict = make(map[string][]string)
+var ExperienceTypeDict = make(map[string][]string)
 
-var protectArticleDict = make(map[string][]string)
+var ProtectArticleDict = make(map[string][]string)
 
-var nirvanaArticleDict = make(map[string][]string)
+var NirvanaArticleDict = make(map[string][]string)
 
 func init() {
 	// 初始化经验字典
-	experienceTypeDict[model.EXPERIENCE_200W] = []string{"200w经验月饼"}
-	experienceTypeDict[model.EXPERIENCE_500W] = []string{}
-	experienceTypeDict[model.EXPERIENCE_5000W] = []string{}
-	experienceTypeDict[model.EXPERIENCE_1E] = []string{"修炼仙册(限时)", "修炼仙册"}
-	experienceTypeDict[model.EXPERIENCE_10E] = []string{"10亿经验卷轴"}
-	experienceTypeDict[model.EXPERIENCE_20E] = []string{"20亿经验卷轴"}
-	experienceTypeDict[model.EXPERIENCE_200E] = []string{"200亿经验卷轴(限时)", "15亿经验卷轴"}
-	experienceTypeDict[model.EXPERIENCE_800E] = []string{"15亿经验卷轴", "800亿经验卷轴"}
+	ExperienceTypeDict[model.EXPERIENCE_200W] = []string{"200w经验月饼"}
+	ExperienceTypeDict[model.EXPERIENCE_500W] = []string{}
+	ExperienceTypeDict[model.EXPERIENCE_5000W] = []string{}
+	ExperienceTypeDict[model.EXPERIENCE_1E] = []string{"修炼仙册(限时)", "修炼仙册"}
+	ExperienceTypeDict[model.EXPERIENCE_10E] = []string{"10亿经验卷轴"}
+	ExperienceTypeDict[model.EXPERIENCE_20E] = []string{"20亿经验卷轴"}
+	ExperienceTypeDict[model.EXPERIENCE_200E] = []string{"200亿经验卷轴(限时)", "15亿经验卷轴"}
+	ExperienceTypeDict[model.EXPERIENCE_800E] = []string{"15亿经验卷轴", "800亿经验卷轴"}
 	// 初始化保护石字典
-	protectArticleDict[model.PROTECT_HC] = []string{}
-	protectArticleDict[model.PROTECT_SH] = []string{}
-	protectArticleDict[model.PROTECT_TS] = []string{"天神之石"}
-	protectArticleDict[model.PROTECT_ZZ] = []string{"至尊神石(绑定)", "至尊神石"}
-	protectArticleDict[model.PROTECT_3XCC] = []string{"★★★成长魂石【绑定】", "★★★成长魂石"}
-	protectArticleDict[model.PROTECT_3X] = []string{}
+	ProtectArticleDict[model.PROTECT_HC] = []string{}
+	ProtectArticleDict[model.PROTECT_SH] = []string{}
+	ProtectArticleDict[model.PROTECT_TS] = []string{"天神之石"}
+	ProtectArticleDict[model.PROTECT_ZZ] = []string{"至尊神石(绑定)", "至尊神石"}
+	ProtectArticleDict[model.PROTECT_3XCC] = []string{"★★★成长魂石【绑定】", "★★★成长魂石"}
+	ProtectArticleDict[model.PROTECT_3X] = []string{}
 
-	nirvanaArticleDict[model.PROTECT_NIRVANA_SD] = []string{"涅盘神丹(限时)", "涅盘神丹(绑定)", "涅盘神丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_NPD] = []string{"涅盘丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_SSD] = []string{"涅盘圣丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_SD] = []string{"涅盘神丹(限时)", "涅盘神丹(绑定)", "涅盘神丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_NPD] = []string{"涅盘丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_SSD] = []string{"涅盘圣丹"}
 
-	nirvanaArticleDict[model.PROTECT_NIRVANA_YPNC] = []string{"一品捏成丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_SPNC] = []string{"上品捏成丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_JPNC] = []string{"极品捏成丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_SPMZ] = []string{"上品命中丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_JPMZ] = []string{"极品命中丹"}
-	nirvanaArticleDict[model.PROTECT_NIRVANA_JPNG] = []string{"极品涅攻丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_YPNC] = []string{"一品捏成丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_SPNC] = []string{"上品捏成丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_JPNC] = []string{"极品涅成丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_SPMZ] = []string{"上品命中丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_JPMZ] = []string{"极品命中丹"}
+	NirvanaArticleDict[model.PROTECT_NIRVANA_JPNG] = []string{"极品涅攻丹"}
 }
 
 type fusionRepositoryKdhsImpl struct{}
@@ -226,35 +226,35 @@ func (inst *fusionRepositoryKdhsImpl) GetPetTypeList() []string {
 
 func (inst *fusionRepositoryKdhsImpl) GetExperienceTypeList() []string {
 	var ExperienceTypeList = []string{}
-	for key := range experienceTypeDict {
+	for key := range ExperienceTypeDict {
 		ExperienceTypeList = append(ExperienceTypeList, key)
 	}
 	return ExperienceTypeList
 }
 
 func (inst *fusionRepositoryKdhsImpl) GetExperienceList(ExperienceType string) []string {
-	return experienceTypeDict[ExperienceType]
+	return ExperienceTypeDict[ExperienceType]
 }
 
 func (inst *fusionRepositoryKdhsImpl) GetProtectArticleTypeList() []string {
 	var ProtectTypeList = []string{}
-	for key := range protectArticleDict {
+	for key := range ProtectArticleDict {
 		ProtectTypeList = append(ProtectTypeList, key)
 	}
 	return ProtectTypeList
 }
 
 func (inst *fusionRepositoryKdhsImpl) GetProjectArticleList(ProtectArticleType string) []string {
-	return protectArticleDict[ProtectArticleType]
+	return ProtectArticleDict[ProtectArticleType]
 }
 
 func (inst *fusionRepositoryKdhsImpl) GetNirvanaArticleTypeList() []string {
 	var ProtectTypeList = []string{}
-	for key := range nirvanaArticleDict {
+	for key := range NirvanaArticleDict {
 		ProtectTypeList = append(ProtectTypeList, key)
 	}
 	return ProtectTypeList
 }
 func (inst *fusionRepositoryKdhsImpl) GetNirvanaArticleList(ProtectArticleType string) []string {
-	return nirvanaArticleDict[ProtectArticleType]
+	return NirvanaArticleDict[ProtectArticleType]
 }
