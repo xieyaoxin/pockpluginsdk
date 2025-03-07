@@ -138,6 +138,7 @@ func getProtectArticleByType(ProtectType string) *model.Article {
 				PROTECT_ARTICEL_MAP[ProtectType] = model.ArticleSliceRemoveItem(ProtectArticleList, ProtectArticle)
 				continue
 			} else {
+				plugin_log.Info("获取到保护物品: %s  当前数量: %d ", ProtectArticle.Name, ProtectArticle.ArticleCount)
 				//ProtectArticle.ArticleCount = ProtectArticle.ArticleCount - 1
 				return ProtectArticle
 			}
