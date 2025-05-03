@@ -36,7 +36,7 @@ func (BattleStateMachine) HandleStartEvent() {
 
 func startBattleTask(ctx context.Context, cancel context.CancelFunc) {
 	reporter := biz_callback.NewDataReporter()
-	callbackInterface := &spi.chains{}
+	callbackInterface := &spi.BattleReportCallback{}
 	reporter.Start(callbackInterface)
 
 	currentUser := status.GetLoginUser()
