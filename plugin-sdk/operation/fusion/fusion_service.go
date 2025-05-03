@@ -1,4 +1,4 @@
-package tt
+package fusion
 
 import "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/runner"
 
