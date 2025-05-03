@@ -10,6 +10,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/battle"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"time"
 )
@@ -34,10 +35,10 @@ func startDungeonTask(context context.Context) {
 	//dungeonConfig := initDungeonConfig()
 }
 
-func initDungeonConfig() *model.DungeonInstanceConfig {
+func getDungeonTask() *model.DungeonInstanceConfig {
 	currentUser := status.GetLoginUser()
 	DungeonInstanceConfig := config.GetDungeonInstanceConfig(currentUser.LoginName)
-	PetId, SkillId := InitBattlePet(DungeonInstanceConfig.PetId, DungeonInstanceConfig.PetName, DungeonInstanceConfig.SkillId, DungeonInstanceConfig.SkillName)
+	PetId, SkillId := battle.InitBattlePet(DungeonInstanceConfig.PetId, DungeonInstanceConfig.PetName, DungeonInstanceConfig.SkillId, DungeonInstanceConfig.SkillName)
 	return &model.DungeonInstanceConfig{
 		DungeonInstanceFightConfig: model.DungeonInstanceFightConfig{
 			PetId:      PetId,
@@ -48,6 +49,7 @@ func initDungeonConfig() *model.DungeonInstanceConfig {
 		},
 		FightTimes: DungeonInstanceConfig.FightTimes,
 	}
+
 }
 
 var DungeonInstanceServiceImplInstance = &dungeonInstanceServiceImpl{}
