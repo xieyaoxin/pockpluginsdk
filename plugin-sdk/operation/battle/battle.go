@@ -14,14 +14,10 @@ import (
 	"time"
 )
 
-var TtServiceImplInstance = &ttServiceImpl{}
 var battleRepository = repository.GetBattleRepository()
 var BattleServiceImplInstance = &battleService{}
 
-type ttServiceImpl struct {
-}
-
-func (inst *ttServiceImpl) Start() {
+func (inst *battleService) Start() {
 	err := runner.StartTask(runner.BATTLE)
 	if err != nil {
 		return
