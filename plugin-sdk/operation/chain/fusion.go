@@ -17,6 +17,8 @@ import (
 	"time"
 )
 
+var FusionStateMachineInstance = &FusionStateMachineApi{}
+
 type FusionStateMachineApi struct{}
 
 var fusionCtx context.Context
@@ -28,7 +30,7 @@ func (FusionStateMachineApi) HandleFinishEvent() {
 
 func (FusionStateMachineApi) HandleStartEvent() {
 	fusionCtx, fusionCancel = context.WithCancel(context.Background())
-	go startTTTask(fusionCtx)
+	go startFusionTask(fusionCtx)
 }
 
 func startFusionTask(ctx context.Context) {

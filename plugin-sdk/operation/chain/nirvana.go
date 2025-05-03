@@ -1,25 +1,60 @@
 package chain
 
 import (
+	"context"
 	"errors"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/chain_model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/equip"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
 	"strings"
 	"time"
 )
 
-var NirvanaServiceImplInstance = &nirvanaServiceImpl{}
+var NirvanaStateMachineInstance = &NirvanaStateMachineApi{}
 
-type nirvanaServiceImpl struct {
+type NirvanaStateMachineApi struct{}
+
+var nirvanaCtx context.Context
+var nirvanaCancel context.CancelFunc
+
+func (NirvanaStateMachineApi) HandleFinishEvent() {
+	nirvanaCancel()
 }
 
-func (inst *nirvanaServiceImpl) Nirvana(Config *model.NirvanaConfig) (bool, error) {
+func (NirvanaStateMachineApi) HandleStartEvent() {
+	nirvanaCtx, nirvanaCancel = context.WithCancel(context.Background())
+	go startNirvanaTask(nirvanaCtx)
+}
+
+func startNirvanaTask(context context.Context) {
+	currentUser := status.GetLoginUser()
+	GetNirvanaConfig := config.GetNirvanaConfig(currentUser.LoginName)
+	NirvanaCount := 0
+	NirvanaConfig := chain_model.CopyNirvanaConfig(*GetNirvanaConfig)
+	for {
+		if NirvanaCount >= GetNirvanaConfig.Finish.NirvanaCount && GetNirvanaConfig.Finish.NirvanaCount > 0 {
+			plugin_log.Info("已涅槃 %d 次，涅槃数量达到预期 %d", NirvanaCount, GetNirvanaConfig.Finish.NirvanaCount)
+			break
+		}
+		_, err := Nirvana(NirvanaConfig)
+		if err != nil {
+			return
+		}
+		NirvanaCount = NirvanaCount + 1
+		Pet := pet.PetServiceInstance.GetBattlePet()
+		plugin_log.Info("第 %d 次。涅槃成功 当前宠物 %s 成长: %f", NirvanaCount, Pet.Name, Pet.Cc)
+	}
+}
+
+func Nirvana(Config *model.NirvanaConfig) (bool, error) {
 	//
 	startTime := time.Now()
 	err1 := pet.PetServiceInstance.SaveUnBattlePet()
@@ -176,11 +211,11 @@ func prepareNirvana(Pet *model.Pet, config model.NirvanaPetConfig) error {
 			break
 		}
 		plugin_log.Info("开始吃经验")
-		article := ExperienceArticles
-		if article.ArticleCount == 0 {
+		expArticle := ExperienceArticles
+		if expArticle.ArticleCount == 0 {
 			continue
 		}
-		article.ArticleServiceInstance.UserArticle(article)
+		article.ArticleServiceInstance.UserArticle(expArticle)
 		CurrentPetStatus, getPetError := pet.PetServiceInstance.GetPetDetail(Pet.Id)
 		if getPetError != nil {
 			CurrentPetStatus, _ = pet.PetServiceInstance.GetPetDetail(Pet.Id)

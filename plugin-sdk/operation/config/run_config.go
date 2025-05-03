@@ -8,6 +8,8 @@ import (
 func init() {
 	//InitMergeArticleCache()
 	runner.HandlerMap[runner.TT_RUNNING] = chain.TTStateMachineInstance
-	runner.HandlerMap[runner.BATTLE_RUNNING] = BattleStateMachineInstance
+	runner.HandlerMap[runner.BATTLE_RUNNING] = chain.BattleStateMachineInstance
+	runner.HandlerMap[runner.MERGE] = chain.FusionStateMachineInstance
+	runner.HandlerMap[runner.NIRVANA] = chain.NirvanaStateMachineInstance
 
 }

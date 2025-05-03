@@ -15,6 +15,8 @@ import (
 	"strings"
 )
 
+var TTStateMachineInstance = &TTStateMachineApi{}
+
 type TTStateMachineApi struct{}
 
 var ttCtx context.Context
