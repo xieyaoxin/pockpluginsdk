@@ -35,6 +35,9 @@ func (NirvanaStateMachineApi) HandleStartEvent() {
 	go startNirvanaTask(nirvanaCtx)
 }
 
+func (NirvanaStateMachineApi) HandleAfterEvent() {
+}
+
 func startNirvanaTask(context context.Context) {
 	currentUser := status.GetLoginUser()
 	GetNirvanaConfig := config.GetNirvanaConfig(currentUser.LoginName)

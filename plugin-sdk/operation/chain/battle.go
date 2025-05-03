@@ -31,6 +31,8 @@ func (BattleStateMachine) HandleStartEvent() {
 	plugin_log.Info("开启挂机 ")
 }
 
+func (BattleStateMachine) HandleAfterEvent() {
+}
 func startBattleTask(ctx context.Context, cancel context.CancelFunc) {
 	reporter := biz_callback.NewDataReporter()
 	callbackInterface := &spi.BattleReportCallback{}

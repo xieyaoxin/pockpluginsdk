@@ -24,6 +24,9 @@ func (DungeonStateMachineApi) HandleStartEvent() {
 	go startDungeonTask(dungeonCtx)
 }
 
+func (DungeonStateMachineApi) HandleAfterEvent() {
+}
+
 func startDungeonTask(context context.Context) {
 	//dungeonConfig := initDungeonConfig()
 }

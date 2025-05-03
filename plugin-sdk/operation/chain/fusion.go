@@ -33,6 +33,9 @@ func (FusionStateMachineApi) HandleStartEvent() {
 	go startFusionTask(fusionCtx)
 }
 
+func (FusionStateMachineApi) HandleAfterEvent() {
+}
+
 func startFusionTask(ctx context.Context) {
 	//reporter := biz_callback.NewDataReporter()
 	//reporter.Start(callbackInterface)

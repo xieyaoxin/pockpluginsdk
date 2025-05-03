@@ -2,7 +2,6 @@ package runner
 
 import (
 	"context"
-	"fmt"
 	"github.com/looplab/fsm"
 	"time"
 )
@@ -52,7 +51,7 @@ func init() {
 			},
 			"leave_state": func(ctx context.Context, e *fsm.Event) {
 				//	 确认任务已完成
-				fmt.Printf("leave_state, ctx is %v ,event is %v  \n", ctx, e)
+				//fmt.Printf("leave_state, ctx is %v ,event is %v  \n", ctx, e)
 			},
 			"enter_state": func(ctx context.Context, e *fsm.Event) {
 				fn := HandlerMap[e.Dst]
@@ -63,8 +62,11 @@ func init() {
 			},
 			"after_event": func(ctx context.Context, e *fsm.Event) {
 				//	 确认任务已完成
-				fmt.Printf("after_event, ctx is %v ,event is %v  \n", ctx, e)
-
+				//fmt.Printf("after_event, ctx is %v ,event is %v  \n", ctx, e)
+				fn := HandlerMap[e.Dst]
+				if fn != nil {
+					fn.HandleAfterEvent()
+				}
 			},
 		},
 	)

@@ -32,6 +32,9 @@ func (TTStateMachineApi) HandleStartEvent() {
 	go startTTTask(ttCtx)
 }
 
+func (TTStateMachineApi) HandleAfterEvent() {
+}
+
 func startTTTask(ttCtx context.Context) {
 	plugin_log.Info("开始TT挂机")
 	reporter := biz_callback.NewDataReporter()
