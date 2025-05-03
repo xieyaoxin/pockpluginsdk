@@ -21,7 +21,7 @@ var BattleServiceImplInstance = &battleService{}
 type ttServiceImpl struct {
 }
 
-func (inst *ttServiceImpl) StartTt() {
+func (inst *ttServiceImpl) Start() {
 	err := runner.StartTask(runner.BATTLE)
 	if err != nil {
 		return

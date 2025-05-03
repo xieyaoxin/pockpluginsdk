@@ -1,4 +1,4 @@
-package _map
+package battle_map
 
 import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"

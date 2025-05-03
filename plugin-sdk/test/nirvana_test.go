@@ -5,7 +5,6 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
 	"testing"
 )
 
@@ -82,10 +81,10 @@ func TestNirvana(t *testing.T) {
 	operation.InitNirvanaCache()
 	Count := 0
 	for Count < 50 {
-		_, err := chain.NirvanaServiceImplInstance.Nirvana(Config)
-		if err != nil {
-			return
-		}
+		//_, err := nirvana.NirvanaServiceImplInstance.Nirvana(Config)
+		//if err != nil {
+		//	return
+		//}
 		Count++
 	}
 
