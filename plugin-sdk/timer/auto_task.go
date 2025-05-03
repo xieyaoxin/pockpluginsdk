@@ -1,6 +1,8 @@
 package timer
 
-import plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
+import (
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/task"
+)
 
 type AutoTaskTimerHandler struct {
 }

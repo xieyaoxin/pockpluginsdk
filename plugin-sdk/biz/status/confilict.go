@@ -15,10 +15,6 @@ const (
 	TT
 )
 
-func GetConflictTask() bool {
-	return IsBattleRunning() || IsParsing()
-}
-
 var currentTask = NONE
 
 func SetTaskType(TaskType int) {

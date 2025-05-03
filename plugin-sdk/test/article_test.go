@@ -1,16 +1,17 @@
 package test
 
 import (
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/user"
 
 	"testing"
 )
 
 func TestQueryArticleList(t *testing.T) {
 	User := GetLoginUser()
-	plugin_sdk.UserServiceInstance.Login(User.LoginName, User.Password)
-	articleList, err := plugin_sdk.ArticleServiceInstance.QueryArticleList("")
+	user.UserServiceInstance.Login(User.LoginName, User.Password)
+	articleList, err := article.ArticleServiceInstance.QueryArticleList("")
 	if err != nil {
 		return
 	}

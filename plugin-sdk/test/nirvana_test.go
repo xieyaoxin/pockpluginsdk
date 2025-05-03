@@ -2,10 +2,10 @@ package test
 
 import (
 	"encoding/json"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
-
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
 	"testing"
 )
 
@@ -79,10 +79,10 @@ func TestNirvana(t *testing.T) {
 		return
 	}
 	plugin_log.Info("涅槃配置为 %s", string(marshal))
-	plugin_sdk.InitNirvanaCache()
+	operation.InitNirvanaCache()
 	Count := 0
 	for Count < 50 {
-		_, err := plugin_sdk.NirvanaServiceImplInstance.Nirvana(Config)
+		_, err := chain.NirvanaServiceImplInstance.Nirvana(Config)
 		if err != nil {
 			return
 		}

@@ -3,10 +3,10 @@ package timer
 import (
 	"encoding/json"
 	"github.com/sirupsen/logrus"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
 )
 
 var DungeonStatus = status.NotReady
@@ -38,7 +38,7 @@ func (*DungeonInstanceTimerHandler) HandleTimer(OriginConfig interface{}) {
 	// 检查副本状态
 	DungeonOpenStatus := false
 	for _, MapId := range dungeonInstanceMapList {
-		open, _ := plugin_sdk.DungeonInstanceServiceImplInstance.GetDungeonStatus(MapId)
+		open, _ := chain.DungeonInstanceServiceImplInstance.GetDungeonStatus(MapId)
 		if open {
 			DungeonOpenStatus = true
 			break
@@ -110,7 +110,7 @@ func Convert2DungeonInstanceFightConfig(OriginConfig interface{}) (*model.Dungeo
 }
 
 func loopDungeon(Config *model.DungeonInstanceTimerConfig, dungeonInstanceMapList []string) {
-	PetId, SkillId := plugin_sdk.InitBattlePet(Config.PetId, Config.PetName, Config.SkillId, Config.SkillName)
+	PetId, SkillId := chain.InitBattlePet(Config.PetId, Config.PetName, Config.SkillId, Config.SkillName)
 	if PetId == "" || SkillId == "" {
 		logrus.Info("未配置挂机宠物和技能")
 		return
@@ -123,7 +123,7 @@ func loopDungeon(Config *model.DungeonInstanceTimerConfig, dungeonInstanceMapLis
 			ForceFight: false,
 			UseSj:      false,
 		}
-		err2 := plugin_sdk.DungeonInstanceServiceImplInstance.FightDungeonOnce(DungeonConfig)
+		err2 := chain.DungeonInstanceServiceImplInstance.FightDungeonOnce(DungeonConfig)
 		if err2 != nil {
 			continue
 		}

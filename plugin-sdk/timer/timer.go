@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/chain/config"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"time"
 )
 

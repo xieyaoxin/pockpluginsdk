@@ -2,10 +2,10 @@ package timer
 
 import (
 	"encoding/json"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
 )
 
 type DropArticleTimerHandler struct {

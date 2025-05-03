@@ -1,0 +1,229 @@
+package operation
+
+import (
+	"errors"
+	"github.com/sirupsen/logrus"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
+)
+
+var LD_EGG_ARTICLE_LIST = []*model.Article{}
+var EXPERIENCE_TYPE_ARTICEL_MAP = make(map[string][]*model.Article)
+var PROTECT_ARTICEL_MAP = make(map[string][]*model.Article)
+var FARM_PETS = []*model.Pet{}
+var BM_NAMES = []string{"金波姆", "绿波姆", "水波姆", "火波姆", "土波姆"}
+var BMW_NAMES = []string{"金波姆王", "绿波姆王", "水波姆王", "火波姆王", "土波姆王", "碧蟾", "魔岩卵", "水仙", "火芒", "金光鼠"}
+var WXL_NAMES = []string{"青龙琅琅", "小青龙琅琅", "金龙霸王", "冰龙苍海", "艾薇儿", "三尾忍忍", "仙狐六尾", "天狐莫姬", "炎龙血焰", "黄龙莫虚"}
+var DRAGON_EGG_NAME = []string{"青龙琅琅之卵", "小青龙琅琅", "金龙霸王之卵", "冰龙苍海之卵", "艾薇儿之卵", "三尾忍忍", "仙狐六尾", "天狐莫姬之卵", "炎龙血焰之卵", "黄龙莫虚之卵"}
+var FusionSpecialEvaluatePetNames = []string{"三尾忍忍", "狐仙六尾", "小青龙琅琅"}
+var NIRVANA_EGG_LIST = []*model.Article{}
+
+// 小神蛋
+var DRAGON_EGG_LIST = []*model.Article{}
+
+func InitMergeArticleCache() {
+	// 缓存经验类物品信息
+	for _, ExperienceType := range repository.GetFusionRepository().GetExperienceTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetExperienceList(ExperienceType)
+		ArticleList, _ := article.ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType] = ArticleList
+	}
+	// 缓存龙蛋信息
+	LD_EGG_ARTICLE_LIST, _ = article.ArticleServiceInstance.QueryArticleListByNameLists(DRAGON_EGG_NAME)
+	// 缓存保护石信息
+	for _, ProtectArticleType := range repository.GetFusionRepository().GetProtectArticleTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetProjectArticleList(ProtectArticleType)
+		ArticleList, _ := article.ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		PROTECT_ARTICEL_MAP[ProtectArticleType] = ArticleList
+	}
+	// 缓存宠物信息
+	FARM_PETS = pet.PetServiceInstance.GetAllPets()
+}
+
+func InitNirvanaCache() {
+	initExpCache()
+	initProtectCache()
+	NIRVANA_EGG_LIST, _ = article.ArticleServiceInstance.QueryArticleListByNameLists(model.NirvanaEggList)
+	DRAGON_EGG_LIST, _ = article.ArticleServiceInstance.QueryArticleListByNameLists(model.DragonEggList)
+	FARM_PETS = pet.PetServiceInstance.GetAllPets()
+}
+
+func initExpCache() {
+	TempExperienceTypeArticleMap := make(map[string][]*model.Article)
+	for _, ExperienceType := range repository.GetFusionRepository().GetExperienceTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetExperienceList(ExperienceType)
+		ArticleList, _ := article.ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		TempExperienceTypeArticleMap[ExperienceType] = ArticleList
+	}
+	EXPERIENCE_TYPE_ARTICEL_MAP = TempExperienceTypeArticleMap
+}
+
+func initProtectCache() {
+	TempProtectArticleMap := make(map[string][]*model.Article)
+	for _, ProtectArticleType := range repository.GetFusionRepository().GetNirvanaArticleTypeList() {
+		ArticleNameList := repository.GetFusionRepository().GetNirvanaArticleList(ProtectArticleType)
+		ArticleList, _ := article.ArticleServiceInstance.QueryArticleListByNameLists(ArticleNameList)
+		TempProtectArticleMap[ProtectArticleType] = ArticleList
+	}
+	PROTECT_ARTICEL_MAP = TempProtectArticleMap
+}
+
+// GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
+func GetBMFromCache() *model.Pet {
+	BM := GetPetFromCacheByPetName(BM_NAMES)
+	if BM != nil {
+		return BM
+	}
+	err := pet.PetServiceInstance.SaveUnBattlePet()
+	if err != nil {
+		plugin_log.Error("寄存非主站宠物失败")
+		return nil
+	}
+	catchBmConfig := chain.InitCatchBmConfig()
+	for {
+		result := chain.BattleServiceImplInstance.FightOneTime(*catchBmConfig)
+		if result == "捕捉成功" {
+			break
+		}
+	}
+	PetCarried, _ := pet.PetServiceInstance.GetCarriedPetList()
+	for _, Pet := range PetCarried {
+		if !Pet.IsBattle {
+			return Pet
+		}
+	}
+	return nil
+}
+
+// GetBMFromCache 获取波姆, 先从缓存中获取,缓存中没有则去捕捉
+func GetBMWFromCache() *model.Pet {
+	BMW := GetPetFromCacheByPetName(BMW_NAMES)
+	return BMW
+}
+
+func GetProtectArticleByType(ProtectType string) (*model.Article, error) {
+	Protect := getProtectArticleByType(ProtectType)
+	if Protect == nil {
+		logrus.Info("查找物品失败,当前查找的物品为: %s, 缓存明细如下: ", ProtectType)
+		for key, value := range PROTECT_ARTICEL_MAP {
+			logrus.Info("\t物品类型:  ", key)
+			for _, item := range value {
+				logrus.Info("\t\t明细:  %s", item.GetDetail())
+			}
+		}
+		// 重新初始化物品缓存
+		initProtectCache()
+		Protect = getProtectArticleByType(ProtectType)
+	}
+	if Protect == nil {
+		return nil, errors.New("找不到合宠物品: " + ProtectType)
+	} else {
+		return Protect, nil
+	}
+}
+
+func getProtectArticleByType(ProtectType string) *model.Article {
+	if ProtectArticleList, exists := PROTECT_ARTICEL_MAP[ProtectType]; exists {
+		TempProtectArticle := make([]*model.Article, len(ProtectArticleList))
+		copy(TempProtectArticle, ProtectArticleList)
+		for _, ProtectArticle := range TempProtectArticle {
+			if ProtectArticle.ArticleCount == 0 {
+				PROTECT_ARTICEL_MAP[ProtectType] = model.ArticleSliceRemoveItem(ProtectArticleList, ProtectArticle)
+				continue
+			} else {
+				plugin_log.Info("获取到保护物品: %s  当前数量: %d ", ProtectArticle.Name, ProtectArticle.ArticleCount)
+				//ProtectArticle.ArticleCount = ProtectArticle.ArticleCount - 1
+				return ProtectArticle
+			}
+		}
+	}
+	return nil
+}
+
+func GetPetFromCacheByPetName(PetNameList []string) *model.Pet {
+	result := []*model.Pet{}
+	var tempPet *model.Pet
+	for _, Pet := range FARM_PETS {
+		if util.SlicesContainsString(PetNameList, Pet.Name) {
+			tempPet = Pet
+			break
+		} else {
+			result = append(result, Pet)
+		}
+	}
+	FARM_PETS = model.PetSliceRemoveItem(FARM_PETS, tempPet)
+	return tempPet
+}
+func GetExperienceArticleByType(ExperienceType string) (*model.Article, error) {
+	Exp := getExperienceArticleByType(ExperienceType)
+	if Exp == nil {
+		logrus.Info("查找物品失败,当前查找的物品为: %s, 缓存明细如下: ", ExperienceType)
+		for key, value := range EXPERIENCE_TYPE_ARTICEL_MAP {
+			logrus.Info("\t物品类型:  ", key)
+			for _, item := range value {
+				logrus.Info("\t\t明细:  %s", item.GetDetail())
+			}
+		}
+		// 重新初始化物品缓存
+		initExpCache()
+		Exp = getExperienceArticleByType(ExperienceType)
+	}
+	if Exp == nil {
+		return nil, errors.New("找不到合宠物品: " + ExperienceType)
+	} else {
+		return Exp, nil
+	}
+
+}
+
+func GetNirvanaEggArticle() *model.Article {
+	TempNirvanaArticle := make([]*model.Article, len(NIRVANA_EGG_LIST))
+	copy(TempNirvanaArticle, NIRVANA_EGG_LIST)
+	for _, NirvanaArticle := range TempNirvanaArticle {
+		if NirvanaArticle.ArticleCount == 0 {
+			NIRVANA_EGG_LIST = model.ArticleSliceRemoveItem(NIRVANA_EGG_LIST, NirvanaArticle)
+			continue
+		} else {
+			//NirvanaArticle.ArticleCount = NirvanaArticle.ArticleCount - 1
+			return NirvanaArticle
+		}
+	}
+	return nil
+}
+
+func GetDragonEggArticle() *model.Article {
+	TempDUArticle := make([]*model.Article, len(DRAGON_EGG_LIST))
+	copy(TempDUArticle, DRAGON_EGG_LIST)
+	for _, DragonArticle := range TempDUArticle {
+		if DragonArticle.ArticleCount == 0 {
+			DRAGON_EGG_LIST = model.ArticleSliceRemoveItem(DRAGON_EGG_LIST, DragonArticle)
+			continue
+		} else {
+			//DragonArticle.ArticleCount = DragonArticle.ArticleCount - 1
+			return DragonArticle
+		}
+	}
+	return nil
+}
+
+func getExperienceArticleByType(ExperienceType string) *model.Article {
+	if ExperienceTypeList, exists := EXPERIENCE_TYPE_ARTICEL_MAP[ExperienceType]; exists {
+		TempExperienceArticle := make([]*model.Article, len(ExperienceTypeList))
+		copy(TempExperienceArticle, ExperienceTypeList)
+		for _, ExperienceArticle := range TempExperienceArticle {
+			if ExperienceArticle.ArticleCount == 0 {
+				PROTECT_ARTICEL_MAP[ExperienceType] = model.ArticleSliceRemoveItem(ExperienceTypeList, ExperienceArticle)
+				continue
+			} else {
+				//ExperienceArticle.ArticleCount = ExperienceArticle.ArticleCount - 1
+				return ExperienceArticle
+			}
+		}
+	}
+	return nil
+}

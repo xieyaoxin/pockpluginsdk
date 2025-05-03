@@ -3,12 +3,12 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
-
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
 	"testing"
 	"time"
 )
@@ -20,7 +20,7 @@ func TestFightOneTime(t *testing.T) {
 		fmt.Printf("登录失败")
 		return
 	}
-	pets, _ := plugin_sdk.PetServiceInstance.GetCarriedPetList()
+	pets, _ := pet.PetServiceInstance.GetCarriedPetList()
 	pet := pets[0]
 	type args struct {
 		BattleConfig model.BattleConfig
@@ -50,7 +50,7 @@ func TestFightOneTime(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := plugin_sdk.BattleServiceImplInstance.FightOneTime(tt.args.BattleConfig); got != tt.want {
+			if got := chain.BattleServiceImplInstance.FightOneTime(tt.args.BattleConfig); got != tt.want {
 				t.Errorf("FightOneTime() = %v, want %v", got, tt.want)
 			}
 		})
@@ -60,7 +60,7 @@ func TestFightOneTime(t *testing.T) {
 func TestFight(t *testing.T) {
 	GetLoginUser()
 
-	pets, _ := plugin_sdk.PetServiceInstance.GetCarriedPetList()
+	pets, _ := pet.PetServiceInstance.GetCarriedPetList()
 	pet := pets[0]
 	type args struct {
 		BattleConfig model.BattleConfig
@@ -91,7 +91,7 @@ func TestFight(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			plugin_sdk.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
+			chain.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
 		})
 	}
 	plugin_log.Info("当前战斗状态: %v", status.IsBattleRunning())
@@ -106,7 +106,7 @@ func TestFight(t *testing.T) {
 func TestFightXDL(t *testing.T) {
 	GetLoginUser()
 
-	pets, _ := plugin_sdk.PetServiceInstance.GetCarriedPetList()
+	pets, _ := pet.PetServiceInstance.GetCarriedPetList()
 	pet := pets[0]
 	type args struct {
 		BattleConfig model.BattleConfig
@@ -138,7 +138,7 @@ func TestFightXDL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			plugin_sdk.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
+			chain.BattleServiceImplInstance.FightByConfig(tt.args.BattleConfig, nil)
 			marshal, err := json.Marshal(tt.args.BattleConfig)
 			if err != nil {
 				return

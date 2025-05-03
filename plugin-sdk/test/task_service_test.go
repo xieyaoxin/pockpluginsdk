@@ -1,9 +1,9 @@
 package test
 
 import (
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/task"
 	"reflect"
 	"testing"
 )
@@ -21,7 +21,7 @@ func Test_taskService_GetTaskTypeList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			if got := plugin_sdk.TaskServiceInstance.GetTaskTypeList(); got != nil {
+			if got := task.TaskServiceInstance.GetTaskTypeList(); got != nil {
 				for _, taskType := range got {
 					plugin_log.Info("%s:%s", taskType.TaskTypeId, taskType.TaskTypeName)
 				}
@@ -46,7 +46,7 @@ func Test_taskService_StartAndFinishTask(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ta := plugin_sdk.TaskServiceInstance
+			ta := task.TaskServiceInstance
 			if got := ta.StartAndFinishTask(tt.args.TaskId, "6"); got != tt.want {
 				t.Errorf("FinishTask() = %v, want %v", got, tt.want)
 			}
@@ -67,7 +67,7 @@ func Test_taskService_GetTaskDetail(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ta := plugin_sdk.TaskServiceInstance
+			ta := task.TaskServiceInstance
 			if got := ta.GetTaskDetail(tt.args.TaskId); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetTaskDetail() = %v, want %v", got, tt.want)
 			}
@@ -85,7 +85,7 @@ func Test_taskService_GetTaskList(t *testing.T) {
 		want []*model.Task
 	}
 	tests := []test{}
-	taskTypeList := plugin_sdk.TaskServiceInstance.GetTaskTypeList()
+	taskTypeList := task.TaskServiceInstance.GetTaskTypeList()
 	for _, taskType := range taskTypeList {
 		tests = append(tests, test{
 			name: taskType.TaskTypeName,
@@ -94,7 +94,7 @@ func Test_taskService_GetTaskList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ta := plugin_sdk.TaskServiceInstance
+			ta := task.TaskServiceInstance
 			plugin_log.Info("%s", tt.name)
 			if got := ta.GetTaskList(tt.args.taskType); got != nil {
 				for _, task := range got {
@@ -119,7 +119,7 @@ func Test_taskService_StartTask(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			ta := plugin_sdk.TaskServiceInstance
+			ta := task.TaskServiceInstance
 			ta.StartAndFinishAllTask()
 		})
 	}

@@ -1,10 +1,11 @@
 package test
 
 import (
-	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
-	chains "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/chain"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/timer"
+	"context"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/runner"
 	"testing"
+	"time"
 )
 
 //8206429
@@ -12,8 +13,28 @@ import (
 
 func TestTtFight(t *testing.T) {
 	GetLoginUser()
-	chains.TtChain()
-	timer.InitTimer(status2.GetLoginUser().LoginName)
+	ctx := context.Background()
+	err := runner.STATE_MACHINE.Event(ctx, runner.TT)
+	if err != nil {
+		plugin_log.Error("TtFight Failed %v", err)
+		return
+	}
+	//time.Sleep(60 * time.Second)
+	//err = runner.STATE_MACHINE.Event(ctx, runner.TT)
+	//if err != nil {
+	//	plugin_log.Error("TtFight Failed %v", err)
+	//	return
+	//}
+	time.Sleep(60 * time.Second)
+	err = runner.STATE_MACHINE.Event(ctx, runner.CLOSE)
+	if err != nil {
+		plugin_log.Error("CLOSE Failed %v", err)
+		return
+	}
+	time.Sleep(6000 * time.Second)
+
+	//chains.TtChain()
+	//timer.InitTimer(status2.GetLoginUser().LoginName)
 	//timer.UpdateTimer(model.TimerConfig{
 	//	Enable:       true,
 	//	Schedule:     10,

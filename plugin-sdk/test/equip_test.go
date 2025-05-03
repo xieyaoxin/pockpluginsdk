@@ -1,8 +1,8 @@
 package test
 
 import (
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/equip"
 
 	"testing"
 )

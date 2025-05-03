@@ -1,0 +1,84 @@
+package article
+
+import (
+	"errors"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+)
+
+var ArticleServiceInstance = &articleService{}
+
+type articleService struct {
+}
+
+func (*articleService) QueryArticleList(name string) ([]*model.Article, error) {
+	return repository.GetArticleRepository().GetArticles(name)
+}
+
+func (*articleService) QueryArticleListByNameLists(articleNameList []string) ([]*model.Article, error) {
+	bagArticles, err := repository.GetArticleRepository().GetArticles("")
+	if err != nil {
+		return nil, err
+	}
+	articleList := []*model.Article{}
+	for _, articleName := range articleNameList {
+		article := getArticleByName(articleName, bagArticles)
+		if article == nil {
+			continue
+		}
+		articleList = append(articleList, article)
+	}
+	return articleList, nil
+}
+
+func (*articleService) UserArticle(article *model.Article) error {
+	err := repository.GetArticleRepository().UseArticle(article.ID)
+	if err != nil {
+		return err
+	}
+	article.ArticleCount = article.ArticleCount - 1
+	return nil
+}
+
+func (*articleService) UseSjk() error {
+	//	 先开水晶卡
+	plugin_log.Info("身上水晶不够,查询身上水晶卡信息")
+	ArticleList, err := ArticleServiceInstance.QueryArticleListByNameLists(plugin_sdk_const.SJK_LIST_NAME)
+	if err != nil || ArticleList == nil || len(ArticleList) == 0 {
+		return errors.New("获取水晶卡失败")
+	}
+	plugin_log.Info("使用水晶卡 %s", ArticleList[0].Name)
+	err = ArticleServiceInstance.UserArticle(ArticleList[0])
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *articleService) DropArticle(id string, count int) {
+	///function/sellBag.php?bid=3734264&n=1
+	DropCount := count
+	if count > 100 {
+		DropCount = 100
+	}
+	repository.GetArticleRepository().SellArticle(id, DropCount)
+}
+
+func getArticleByName(articleName string, articleList []*model.Article) *model.Article {
+	for _, article := range articleList {
+		if article.Name == articleName {
+			return article
+		}
+	}
+	return nil
+}
+
+func (*articleService) Save2Repository(articleName string, saveCount int) bool {
+	return repository.GetArticleRepository().Save2Repository(articleName, saveCount)
+}
+
+func (*articleService) BatUseArticle(ArticleId string, batchCount int) {
+	repository.GetArticleRepository().BatchUseArticle(ArticleId, batchCount)
+}

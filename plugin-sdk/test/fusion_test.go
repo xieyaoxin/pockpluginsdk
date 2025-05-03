@@ -3,14 +3,15 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
 	"testing"
 )
 
 func TestFusion(t *testing.T) {
 	GetLoginUser()
-	plugin_sdk.InitMergeArticleCache()
+	operation.InitMergeArticleCache()
 	//_, err := plugin_sdk.UserServiceInstance.Login(User.LoginName, User.Password)
 	MergeConfig := model.MergeGodConfig{
 		MainPet: &model.MergeDragonConfig{
@@ -170,7 +171,7 @@ func TestFusion(t *testing.T) {
 		return
 	}
 	println(string(marshal))
-	god, err := plugin_sdk.MergeGod(MergeConfig)
+	god, err := chain.MergeGod(MergeConfig)
 	if err != nil {
 		return
 	}

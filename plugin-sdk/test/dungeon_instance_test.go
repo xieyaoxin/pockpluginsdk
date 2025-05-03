@@ -2,8 +2,8 @@ package test
 
 import (
 	"fmt"
-	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
+	plugin_sdk "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
 	"testing"
 )
 
