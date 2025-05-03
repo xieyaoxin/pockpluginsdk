@@ -9,6 +9,7 @@ import (
 	status2 "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/battle"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/runner"
@@ -149,7 +150,7 @@ func fight4TtOnce(config *model.TtConfig) (string, error) {
 		PetId:   config.PetId,
 		SkillId: config.SkillId,
 	}
-	result := BattleServiceImplInstance.Fight(battleConfig, monster)
+	result := battle.BattleServiceImplInstance.Fight(battleConfig, monster)
 	if !result {
 		return CurrentLevel, errors.New("战斗失败")
 	}
@@ -186,7 +187,7 @@ func enterTTMap(config *model.TtConfig) (*model.Monster, error) {
 func initTTConfig() *model.TtConfig {
 	currentUser := status2.GetLoginUser()
 	ttConfig := config.GetTtConfig(currentUser.LoginName)
-	PetId, SkillId := InitBattlePet(ttConfig.PetId, ttConfig.PetName, ttConfig.SkillId, ttConfig.SkillName)
+	PetId, SkillId := battle.InitBattlePet(ttConfig.PetId, ttConfig.PetName, ttConfig.SkillId, ttConfig.SkillName)
 	return &model.TtConfig{
 		PetId:      PetId,
 		SkillId:    SkillId,
