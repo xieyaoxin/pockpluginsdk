@@ -14,6 +14,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/equip"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/runner"
 	"strings"
 	"time"
 )
@@ -42,10 +43,13 @@ func startNirvanaTask(context context.Context) {
 	for {
 		if NirvanaCount >= GetNirvanaConfig.Finish.NirvanaCount && GetNirvanaConfig.Finish.NirvanaCount > 0 {
 			plugin_log.Info("已涅槃 %d 次，涅槃数量达到预期 %d", NirvanaCount, GetNirvanaConfig.Finish.NirvanaCount)
+			runner.StopTask()
 			break
 		}
 		_, err := Nirvana(NirvanaConfig)
 		if err != nil {
+			plugin_log.Info("已涅槃 %d 次，涅磐异常，异常原因 %s", NirvanaCount, err.Error())
+			runner.StopTask()
 			return
 		}
 		NirvanaCount = NirvanaCount + 1

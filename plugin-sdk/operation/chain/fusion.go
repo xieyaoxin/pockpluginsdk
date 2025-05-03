@@ -46,6 +46,8 @@ func startFusionTask(ctx context.Context) {
 	for {
 		select {
 		case <-ctx.Done():
+			plugin_log.Info("合神结束")
+			runner.StopTask()
 			return
 		default:
 			GodList := []*model.Pet{}
@@ -53,6 +55,7 @@ func startFusionTask(ctx context.Context) {
 			petsInBody, err := pet.PetServiceInstance.GetCarriedPetList()
 			pets := append(petsInFarm, petsInBody...)
 			if err != nil {
+				runner.StopTask()
 				return
 			}
 			for _, Pet := range pets {

@@ -10,6 +10,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/runner"
 	"strings"
 	"time"
 )
@@ -90,6 +91,7 @@ func startBattleTask(ctx context.Context, cancel context.CancelFunc) {
 		select {
 		case <-ctx.Done():
 			plugin_log.Info("停止挂机任务")
+			runner.StopTask()
 			return
 		default:
 			result := battle.BattleServiceImplInstance.FightOneTime(battleConfig2)
