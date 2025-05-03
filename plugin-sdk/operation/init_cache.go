@@ -8,7 +8,7 @@ import (
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
 	util "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/utils"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
-	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/battle"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/pet"
 )
 
@@ -84,9 +84,9 @@ func GetBMFromCache() *model.Pet {
 		plugin_log.Error("寄存非主站宠物失败")
 		return nil
 	}
-	catchBmConfig := chain.InitCatchBmConfig()
+	catchBmConfig := battle.InitCatchBmConfig()
 	for {
-		result := chain.BattleServiceImplInstance.FightOneTime(*catchBmConfig)
+		result := battle.BattleServiceImplInstance.FightOneTime(*catchBmConfig)
 		if result == "捕捉成功" {
 			break
 		}

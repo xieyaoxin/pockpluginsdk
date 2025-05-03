@@ -1,15 +1,54 @@
 package chain
 
 import (
+	"context"
 	"errors"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/model"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_log"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/plugin_sdk_const"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/repository"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/biz/status"
 	biz_callback "github.com/xieyaoxin/pockpluginsdk/plugin-sdk/callback"
 	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/article"
+	"github.com/xieyaoxin/pockpluginsdk/plugin-sdk/operation/chain/spi/config"
 	"time"
 )
+
+var DungeonStateMachineInstance = &DungeonStateMachineApi{}
+
+type DungeonStateMachineApi struct{}
+
+var dungeonCtx context.Context
+var dungeonCancel context.CancelFunc
+
+func (DungeonStateMachineApi) HandleFinishEvent() {
+	dungeonCancel()
+}
+
+func (DungeonStateMachineApi) HandleStartEvent() {
+	dungeonCtx, dungeonCancel = context.WithCancel(context.Background())
+	go startDungeonTask(dungeonCtx)
+}
+
+func startDungeonTask(context context.Context) {
+	//dungeonConfig := initDungeonConfig()
+}
+
+func initDungeonConfig() *model.DungeonInstanceConfig {
+	currentUser := status.GetLoginUser()
+	DungeonInstanceConfig := config.GetDungeonInstanceConfig(currentUser.LoginName)
+	PetId, SkillId := InitBattlePet(DungeonInstanceConfig.PetId, DungeonInstanceConfig.PetName, DungeonInstanceConfig.SkillId, DungeonInstanceConfig.SkillName)
+	return &model.DungeonInstanceConfig{
+		DungeonInstanceFightConfig: model.DungeonInstanceFightConfig{
+			PetId:      PetId,
+			SkillId:    SkillId,
+			MapId:      DungeonInstanceConfig.MapId,
+			ForceFight: DungeonInstanceConfig.ForceFight,
+			UseSj:      DungeonInstanceConfig.UseSj,
+		},
+		FightTimes: DungeonInstanceConfig.FightTimes,
+	}
+}
 
 var DungeonInstanceServiceImplInstance = &dungeonInstanceServiceImpl{}
 var repositoryInstance = repository.GetDungeonInstanceRepository()
